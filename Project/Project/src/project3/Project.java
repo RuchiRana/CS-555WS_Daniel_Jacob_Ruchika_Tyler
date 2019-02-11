@@ -116,12 +116,15 @@ public class Project
 	}
 	
 	private void printArr(String[] arr)
-	{
+	{	
 		for(int i = 0; i < arr.length; i++)
 		{
-			System.out.println(arr[i]);
+			
+			System.out.print("\t|\t" +arr[i]);
+			//System.out.format(format, arr[i]);
 		}
-		System.out.println("----------------------------");
+		System.out.println("\t|");
+		//System.out.println("----------------------------");
 	}
 	
 	private void printList(List<String[]> list)
@@ -145,7 +148,7 @@ public class Project
 			{
 				ids.add(data);
 			}
-
+			
 			saveIndi[0] =  data;
 			
 			//set defaults
@@ -272,6 +275,52 @@ public class Project
 		famPrevTag = tag;
 	}
 	
+	
+	private void printIndividuals()
+	{
+		System.out.println("\n\tIndividuals");
+    	System.out.print("\t");
+    	for(int i=0; i<80; i++)
+	  	{
+	  		System.out.print("--");
+	  	}
+    	System.out.println();
+		
+    	String format = "|\t%1$-8s|\t%2$-16s|\t%3$-8s|\t%4$-16s|\t%5$-8s|\t%6$-8s|\t%7$-8s|\t%8$-8s|\t%9$-8s| \n";
+		System.out.print("\t");
+		System.out.format(format,"ID","Name","Gender","Birthday","Age","Alive","Death","Child","Spouse");
+		System.out.print("\t");
+		
+		for(int i=0; i<80; i++)
+	  	{
+	  		System.out.print("--");
+	  	}
+		
+    	System.out.println();
+	}
+	
+	private void printFamilies()
+	{
+		System.out.println("\tFamilies");
+    	System.out.print("\t");
+    	for(int i=0; i<51; i++)
+	  	{
+	  		System.out.print("---");
+	  	}
+    	
+    	System.out.println();
+		System.out.print("\t");
+		String format1 = "|\t%1$-8s|\t%2$-16s|   %3$-12s|    %4$-11s|\t%5$-16s|    %6$-11s|\t%7$-16s|   %8$-12s| \n";
+		System.out.format(format1,"ID","Married","Divorced","Husband ID","Husband Name","Wife Id","Wife Name","Children");
+		System.out.print("\t");
+		for(int i=0; i<51; i++)
+	  	{
+	  		System.out.print("---");
+	  	}
+		
+    	System.out.println();
+	}
+	
 	public void run() throws IOException
 	{
 		BufferedReader proj = null;
@@ -292,9 +341,9 @@ public class Project
 	    	{
 	    		int id = Integer.parseInt(txtLine.substring(0,1));
 	    		String tag = txtLine.substring(2);
-		    
 	    		switch(id)
 		    	{
+	    		
 		    		case 0:
 		    			list0.add(tag);
 		    			break;
@@ -308,7 +357,6 @@ public class Project
 		    			break;
 		    		
 		    		default:
-		    			System.out.println("Unsupported ID: " + id);
 		    			break;
 		    	}
 	    	
@@ -412,8 +460,30 @@ public class Project
 	    	if(famDetails.get(0)[0] == null)
 	    		famDetails.remove(0);
 	    	
+	    	//Print Individuals 
+	    	
+	    	printIndividuals();
+	    	
 	    	printList(indiDetails);
+	    	
+	    	System.out.print("\t");
+	    	for(int i=0; i<80; i++)
+		  	{
+		  		System.out.print("--");
+		  	}
+	    	System.out.println();
+	    	
+	    	//Print Families
+	    	printFamilies();
+	    	
 	    	printList(famDetails);
+	    	
+	    	System.out.print("\t");
+			for(int i=0; i<51; i++)
+		  	{
+		  		System.out.print("---");
+		  	}
+			
 	    }
 	    catch(IOException e)
 	    {
