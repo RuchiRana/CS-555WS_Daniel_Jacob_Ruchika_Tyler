@@ -1,12 +1,13 @@
-package Project4;
+package project4;
 
 import java.io.IOException;
 
-public class Driver
+public class Driver 
 {
 	public static void main(String[] args) throws IOException
 	{
-		Project project04 = new Project("resources/tags.txt","resources/Project04.ged");
-		project04.run();
+		Project project4 = new Project("src/resources/tags.txt","src/resources/Project04.ged");
+		
+		project4.run();
 	}
 }

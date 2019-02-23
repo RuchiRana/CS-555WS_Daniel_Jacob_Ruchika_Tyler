@@ -1,7 +1,8 @@
-package Project4;
+package project4;
 
 import java.io.*;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Project 
@@ -626,6 +627,11 @@ public class Project
 	    	//Result of story 5
 	    	resultstory5();
 	    	
+	    	// Story 1
+			datesBeforeCurrent(indiDetails, famDetails);
+			
+			// Story 4
+			marriageBeforeDivorce(famDetails);
 	   }
 	   
 							   
@@ -636,6 +642,75 @@ public class Project
 	   }
 	   
 	   
+	}
+	
+	public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate curr = LocalDate.now();
+		String currdate = curr.format(formatter);
+		LocalDate formattedcurr = LocalDate.parse(currdate, formatter);
+		LocalDate bday;
+		LocalDate dday;
+		LocalDate mday;
+		LocalDate divday;
+	
+		for (int i = 0; i < indi.size(); i++) {
+			if (indi.get(i)[3] == "N/A") {
+				bday = LocalDate.MIN;
+			} else {
+				bday = LocalDate.parse(indi.get(i)[3], formatter);
+			}
+			if (indi.get(i)[6] == "N/A") {
+				dday = LocalDate.MIN;
+			} else {
+				dday = LocalDate.parse(indi.get(i)[6], formatter);
+			}
+			if (bday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Birthday " + bday.format(formatter) + " occurrs in the future.");
+			}
+			if (dday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Death " + bday.format(formatter) + " occurrs in the future.");
+			}
+		}
+		
+		for (int j = 0; j < fam.size(); j++) {
+			if (fam.get(j)[1] == "N/A") {
+				mday = LocalDate.MIN;
+			} else {
+				mday = LocalDate.parse(fam.get(j)[1], formatter);
+			}
+			if (fam.get(j)[2] == "N/A") {
+				divday = LocalDate.MIN;
+			} else {
+				divday = LocalDate.parse(fam.get(j)[2], formatter);
+			}
+			if (mday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Marriage date " + mday.format(formatter) + " occurrs in the future.");
+			}
+			if (divday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Divorce date " + divday.format(formatter) + " occurrs in the future.");
+			}
+			
+		}
+	}
+	
+	public void marriageBeforeDivorce(List<String[]> fam) {
+		
+		LocalDate mday;
+		LocalDate divday;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		for (int i = 0; i < fam.size(); i++) {
+			if (fam.get(i)[1] == "N/A" || fam.get(i)[2] == "N/A") {
+				continue;
+			}
+			mday = LocalDate.parse(fam.get(i)[1], formatter);
+			divday = LocalDate.parse(fam.get(i)[2], formatter);
+			if (mday.isAfter(divday)) {
+				System.out.println("ERROR: FAMILY: US04: " + fam.get(i)[0] + ": Divorced " + divday.format(formatter) + " before married " + mday.format(formatter));
+			}
+		}
 	}
 	
 }
