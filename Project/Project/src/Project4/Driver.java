@@ -1,13 +1,14 @@
-package project4;
+package Project4;
 
 import java.io.IOException;
+import java.text.ParseException;
 
-public class Driver 
+public class Driver
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, ParseException
 	{
-		Project project4 = new Project("src/resources/tags.txt","src/resources/Project04.ged");
+		Project project04 = new Project("resources/tags.txt","resources/Project04.ged");
 		
-		project4.run();
+		project04.run();
 	}
 }

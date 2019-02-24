@@ -1,4 +1,4 @@
-
+package Project4;
 
 import java.io.*;
 import java.time.*;
@@ -448,6 +448,113 @@ public class Project
 		}
 	}
 	
+	public void resultstory6()
+	{
+		//Sets the value of variables
+		for(int i = 0; i < famDetails.size(); i++)
+		{
+			for(int j  = 0; j <famDetails.get(i).length; j++)
+			{
+				if(famDetails.get(i)[j].contains("@F"))
+				{
+					String[] result0 = famDetails.get(i)[0].split("@");
+		  			fid[d] = result0[1]; //Family ID
+					divdate[d] = famDetails.get(i)[2]; //Divorce date
+					String[] result1 = famDetails.get(i)[3].split("@");
+		  			hid[d] = result1[1]; //Husband's ID
+		  			String[] result2 = famDetails.get(i)[5].split("@");
+		  			wid[d] = result2[1]; // Wife's ID
+					d++;		
+				}
+			}
+		}
+		
+		for(int i = 0; i < indiDetails.size(); i++)
+		{
+			for(int j  = 0; j <indiDetails.get(i).length; j++)
+			{
+				if(indiDetails.get(i)[j].contains("@I"))
+				{
+					String[] result1 = indiDetails.get(i)[0].split("@");
+		  			iid[d1] = result1[1]; // Individual ID
+					ddate[d1] = indiDetails.get(i)[6]; // Death date
+					d1++;
+				}
+			}
+		}
+		//Implements story 5 and prints
+		for(int i = 0; i < famDetails.size(); i++)
+		{	
+			for(int j = 0; j < indiDetails.size(); j++)
+			{
+				boolean foo = false;
+				if(  hid[i].compareTo(iid[j]) == 0 && !ddate[j].equals("N/A") && !divdate[i].equalsIgnoreCase("N/A") )
+				{	
+					String[] divdate1 = divdate[i].split("-");
+					String divyear = divdate1[0];   String divmonth = divdate1[1];   String divday = divdate1[2];
+					
+					String[] ddate1 = ddate[j].split("-");
+					String dyear = ddate1[0];   String dmonth = ddate1[1];	String dday = ddate1[2];
+					
+					if(Integer.parseInt(divyear) < Integer.parseInt(dyear))
+					{
+						foo = true;
+					}
+					
+					else if(Integer.parseInt(divyear) == Integer.parseInt(dyear))
+					{
+						 if(Integer.parseInt(divmonth) < Integer.parseInt(dmonth))
+						 {
+								foo = true;
+						 }			 	
+						 else if(Integer.parseInt(divmonth) == Integer.parseInt(dmonth))
+						 {
+							 if(Integer.parseInt(divday) <= Integer.parseInt(dday))
+							 {
+								foo = true;
+							 }	
+						 }
+					}
+					if (!foo)
+						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after husband's (" + hid[i] + ") death on " + ddate[j]+ "\n");
+				}	
+				
+				if( wid[i].compareTo(iid[j]) == 0 && !ddate[j].equals("N/A") && !divdate[i].equalsIgnoreCase("N/A"))
+				{		
+					String[] divdate1 = divdate[i].split("-");
+					String divyear = divdate1[0];   String divmonth = divdate1[1];   String divday = divdate1[2];
+					
+					String[] ddate1 = ddate[j].split("-");
+					String dyear = ddate1[0];   String dmonth = ddate1[1];	String dday = ddate1[2];						
+						
+					if(Integer.parseInt(divyear) < Integer.parseInt(dyear))
+					{
+						foo = true;
+					}							
+					else if(Integer.parseInt(divyear) == Integer.parseInt(dyear))
+					{
+						 if(Integer.parseInt(divmonth) < Integer.parseInt(dmonth))
+						 {
+							foo = true;						
+						 }
+						 	
+						 else if(Integer.parseInt(divmonth) == Integer.parseInt(dmonth))
+						 {
+							 if(Integer.parseInt(divday) <= Integer.parseInt(dday))
+							 {
+								foo = true;
+							 }		
+						 }
+					}
+					if (!foo)
+					{
+						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after wife's (" + wid[i] + ") death on " + ddate[j]+ "\n");
+					}
+				}
+			}
+		}
+	}
+	
 	
 	public boolean compare(String computed)
 	{
@@ -470,6 +577,144 @@ public class Project
 			return "NOT FOUND.";
 	}
 	
+	public static void checkBBD(List<String[]> indi) throws ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		for (int i=0; i < indi.size(); i++) {
+
+			if (indi.get(i)[3] == "N/A" || indi.get(i)[6] == "N/A") {
+				continue;
+			}
+
+			Date birth = format.parse(indi.get(i)[3]);
+			Date death = format.parse(indi.get(i)[6]);
+
+			if (death.before(birth)) {
+				System.out.println("ERROR: INDIVIDUAL: US03: " + indi.get(i)[0] + " Died " + format.format(death) + " before born " + format.format(birth));
+				//return false;
+			}
+		}
+		//return true;
+	}
+	
+public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate curr = LocalDate.now();
+		String currdate = curr.format(formatter);
+		LocalDate formattedcurr = LocalDate.parse(currdate, formatter);
+		LocalDate bday;
+		LocalDate dday;
+		LocalDate mday;
+		LocalDate divday;
+	
+		for (int i = 0; i < indi.size(); i++) {
+			if (indi.get(i)[3] == "N/A") {
+				bday = LocalDate.MIN;
+			} else {
+				bday = LocalDate.parse(indi.get(i)[3], formatter);
+			}
+			if (indi.get(i)[6] == "N/A") {
+				dday = LocalDate.MIN;
+			} else {
+				dday = LocalDate.parse(indi.get(i)[6], formatter);
+			}
+			if (bday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Birthday " + bday.format(formatter) + " occurrs in the future.");
+			}
+			if (dday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Death " + bday.format(formatter) + " occurrs in the future.");
+			}
+		}
+		
+		for (int j = 0; j < fam.size(); j++) {
+			if (fam.get(j)[1] == "N/A") {
+				mday = LocalDate.MIN;
+			} else {
+				mday = LocalDate.parse(fam.get(j)[1], formatter);
+			}
+			if (fam.get(j)[2] == "N/A") {
+				divday = LocalDate.MIN;
+			} else {
+				divday = LocalDate.parse(fam.get(j)[2], formatter);
+			}
+			if (mday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Marriage date " + mday.format(formatter) + " occurrs in the future.");
+			}
+			if (divday.isAfter(formattedcurr)) {
+				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Divorce date " + divday.format(formatter) + " occurrs in the future.");
+			}
+			
+		}
+	}
+	
+	public void marriageBeforeDivorce(List<String[]> fam) {
+		
+		LocalDate mday;
+		LocalDate divday;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		for (int i = 0; i < fam.size(); i++) {
+			if (fam.get(i)[1] == "N/A" || fam.get(i)[2] == "N/A") {
+				continue;
+			}
+			mday = LocalDate.parse(fam.get(i)[1], formatter);
+			divday = LocalDate.parse(fam.get(i)[2], formatter);
+			if (mday.isAfter(divday)) {
+				System.out.println("ERROR: FAMILY: US04: " + fam.get(i)[0] + ": Divorced " + divday.format(formatter) + " before married " + mday.format(formatter));
+			}
+		}
+	}
+	public static void checkBBM(List<String[]> indi, List<String[]> fam) throws ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		for (int i=0; i < fam.size(); i++) {
+			String dateM = fam.get(i)[1];
+
+			if (dateM == "N/A") {
+				continue;
+			}
+
+			Date dm = format.parse(dateM);
+			//System.out.println(dateM);
+
+			if (fam.get(i)[3] != "None") {
+				Date husb = getIndiBirthDate(indi, fam.get(i)[3]);
+				//System.out.println(husb.toString());
+				if (dm.before(husb)) {
+					System.out.println("ERROR: FAMILY: US02: " + fam.get(i)[0] + ": Husband birthdate " + format.format(husb) + " is after marriage date " + format.format(dm));
+					//return false;
+				}
+			}
+			
+			if (fam.get(i)[5] != "None") {
+				Date wife = getIndiBirthDate(indi, fam.get(i)[5]);			
+				//System.out.println(wife.toString());
+				if (dm.before(wife)) {
+					System.out.println("ERROR: FAMILY: US02: " + fam.get(i)[0] + ": Wife birthdate " + format.format(wife) + " is after marriage date " + format.format(dm));
+					//return false;
+				}
+			}
+		}
+		//return true;
+	}
+
+	public static Date getIndiBirthDate(List<String[]> indi, String id) throws ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		for (int i=0; i < indi.size(); i++) {
+
+			if (indi.get(i)[0].equals(id)) {
+				String dateB = indi.get(i)[3];
+
+				if (dateB == "N/A") {
+					return format.parse("0000-01-01");
+				}
+
+				return format.parse(dateB);
+			}
+		}
+		return format.parse("0000-01-01");
+	}
+
 	public void run() throws IOException, ParseException
 	{
 		BufferedReader proj = null;
@@ -625,8 +870,11 @@ public class Project
 		  	}
 			System.out.println();
 			
-	    	//Result of story 5
+			//Story 5
 	    	resultstory5();
+			
+			//Story 6
+	    	resultstory6();
 	    	
 	    	// Story 1
 			datesBeforeCurrent(indiDetails, famDetails);
@@ -639,6 +887,8 @@ public class Project
 
 			//Story3
 			checkBBD(indiDetails);
+			
+			
 	   }
 	   
 							   
@@ -646,148 +896,8 @@ public class Project
 	   {
 	   	System.out.println("Project File Not Found");
 	   	e.printStackTrace();
-	   }
+	   }  
 	   
-	   
-	}
-	
-	public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate curr = LocalDate.now();
-		String currdate = curr.format(formatter);
-		LocalDate formattedcurr = LocalDate.parse(currdate, formatter);
-		LocalDate bday;
-		LocalDate dday;
-		LocalDate mday;
-		LocalDate divday;
-	
-		for (int i = 0; i < indi.size(); i++) {
-			if (indi.get(i)[3] == "N/A") {
-				bday = LocalDate.MIN;
-			} else {
-				bday = LocalDate.parse(indi.get(i)[3], formatter);
-			}
-			if (indi.get(i)[6] == "N/A") {
-				dday = LocalDate.MIN;
-			} else {
-				dday = LocalDate.parse(indi.get(i)[6], formatter);
-			}
-			if (bday.isAfter(formattedcurr)) {
-				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Birthday " + bday.format(formatter) + " occurrs in the future.");
-			}
-			if (dday.isAfter(formattedcurr)) {
-				System.out.println("ERROR: INDIVIDUAL: US01: " + indi.get(i)[0] + ": Death " + bday.format(formatter) + " occurrs in the future.");
-			}
-		}
-		
-		for (int j = 0; j < fam.size(); j++) {
-			if (fam.get(j)[1] == "N/A") {
-				mday = LocalDate.MIN;
-			} else {
-				mday = LocalDate.parse(fam.get(j)[1], formatter);
-			}
-			if (fam.get(j)[2] == "N/A") {
-				divday = LocalDate.MIN;
-			} else {
-				divday = LocalDate.parse(fam.get(j)[2], formatter);
-			}
-			if (mday.isAfter(formattedcurr)) {
-				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Marriage date " + mday.format(formatter) + " occurrs in the future.");
-			}
-			if (divday.isAfter(formattedcurr)) {
-				System.out.println("ERROR: FAMILY: US01: " + fam.get(j)[0] + ": Divorce date " + divday.format(formatter) + " occurrs in the future.");
-			}
-			
-		}
-	}
-	
-	public void marriageBeforeDivorce(List<String[]> fam) {
-		
-		LocalDate mday;
-		LocalDate divday;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		
-		for (int i = 0; i < fam.size(); i++) {
-			if (fam.get(i)[1] == "N/A" || fam.get(i)[2] == "N/A") {
-				continue;
-			}
-			mday = LocalDate.parse(fam.get(i)[1], formatter);
-			divday = LocalDate.parse(fam.get(i)[2], formatter);
-			if (mday.isAfter(divday)) {
-				System.out.println("ERROR: FAMILY: US04: " + fam.get(i)[0] + ": Divorced " + divday.format(formatter) + " before married " + mday.format(formatter));
-			}
-		}
-	}
-
-	public static Date getIndiBirthDate(List<String[]> indi, String id) throws ParseException{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-		for (int i=0; i < indi.size(); i++) {
-
-			if (indi.get(i)[0].equals(id)) {
-				String dateB = indi.get(i)[3];
-
-				if (dateB == "N/A") {
-					return format.parse("0000-01-01");
-				}
-
-				return format.parse(dateB);
-			}
-		}
-		return format.parse("0000-01-01");
-	}
-
-	public static void checkBBM(List<String[]> indi, List<String[]> fam) throws ParseException{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		for (int i=0; i < fam.size(); i++) {
-			String dateM = fam.get(i)[1];
-
-			if (dateM == "N/A") {
-				continue;
-			}
-
-			Date dm = format.parse(dateM);
-			//System.out.println(dateM);
-
-			if (fam.get(i)[3] != "None") {
-				Date husb = getIndiBirthDate(indi, fam.get(i)[3]);
-				//System.out.println(husb.toString());
-				if (dm.before(husb)) {
-					System.out.println("ERROR: FAMILY: US02: " + fam.get(i)[0] + ": Husband birthdate " + format.format(husb) + " is after marriage date " + format.format(dm));
-					//return false;
-				}
-			}
-			
-			if (fam.get(i)[5] != "None") {
-				Date wife = getIndiBirthDate(indi, fam.get(i)[5]);			
-				//System.out.println(wife.toString());
-				if (dm.before(wife)) {
-					System.out.println("ERROR: FAMILY: US02: " + fam.get(i)[0] + ": Wife birthdate " + format.format(wife) + " is after marriage date " + format.format(dm));
-					//return false;
-				}
-			}
-		}
-		//return true;
-	}
-
-	public static void checkBBD(List<String[]> indi) throws ParseException{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		for (int i=0; i < indi.size(); i++) {
-
-			if (indi.get(i)[3] == "N/A" || indi.get(i)[6] == "N/A") {
-				continue;
-			}
-
-			Date birth = format.parse(indi.get(i)[3]);
-			Date death = format.parse(indi.get(i)[6]);
-
-			if (death.before(birth)) {
-				System.out.println("ERROR: INDIVIDUAL: US03: " + indi.get(i)[0] + " Died " + format.format(death) + " before born " + format.format(birth));
-				//return false;
-			}
-		}
-		//return true;
 	}
 	
 }
