@@ -696,6 +696,68 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 		//return true;
 	}
+	
+	//Story 7
+	public static void checkDBB(List<String[]> indi) throws ParseException
+	{
+		Period p;
+		//Death should be < 150 years after birth
+		for(int i = 0; i < indi.size(); i++)
+		{
+			String deathDate = indi.get(i)[6];
+			String birthDate = indi.get(i)[3];	
+
+			String byear = birthDate.substring(0,birthDate.indexOf("-"));
+			String bmonth = birthDate.substring(birthDate.indexOf("-") + 1).substring(0, birthDate.substring(birthDate.indexOf("-") + 1).indexOf("-"));
+			String bday = birthDate.substring(birthDate.indexOf("-") + 1).substring(birthDate.substring(birthDate.indexOf("-") + 1).indexOf("-") + 1);
+			LocalDate lBDate = LocalDate.of(Integer.parseInt(byear), Integer.parseInt(bmonth), Integer.parseInt(bday));
+			
+			if(!deathDate.equals("N/A"))
+			{
+				
+				String dyear = deathDate.substring(0,deathDate.indexOf("-"));
+				String dmonth = deathDate.substring(deathDate.indexOf("-") + 1).substring(0, deathDate.substring(deathDate.indexOf("-") + 1).indexOf("-"));
+				String dday = deathDate.substring(deathDate.indexOf("-") + 1).substring(deathDate.substring(deathDate.indexOf("-") + 1).indexOf("-") + 1);
+				
+				LocalDate lDDate = LocalDate.of(Integer.parseInt(dyear), Integer.parseInt(dmonth),Integer.parseInt(dday));
+				
+				p = Period.between(lBDate, lDDate);
+								
+				if(p.isNegative())
+				{
+					System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Death Date: " + lDDate + " is before Birth Date " + lBDate);
+				}
+				
+				if(p.isZero())
+				{
+					System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Death Date: " + lDDate + " is the same as the Birth Date " + lBDate);
+				}
+				
+				if(p.getYears() >= 150)
+				{
+					System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Death Date: " + lDDate + " is not 150 years less than the Birth Date " + lBDate);
+				}		
+			}
+			//Current date should be < 150 years from birth date
+			p = Period.between(lBDate, LocalDate.now());
+			
+			if(p.isNegative())
+			{
+				System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Current Date: " + LocalDate.now() + " is before the Birth Date " + lBDate);
+			}
+			
+			if(p.isZero())
+			{
+				System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Current Date: " + LocalDate.now() + " is the same as the Birth Date " + lBDate);
+			}
+			
+			if(p.getYears() >= 150)
+			{
+				System.out.println("ERROR: INDIVIDUAL US07: " + indi.get(i)[0] + " Current Date: " + LocalDate.now() + " is not 150 years less than the Birth Date " + lBDate);
+			}
+			
+		}
+	}
 
 	public static Date getIndiBirthDate(List<String[]> indi, String id) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -888,6 +950,8 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			//Story3
 			checkBBD(indiDetails);
 			
+			//Story 7
+			checkDBB(indiDetails);
 			
 	   }
 	   
