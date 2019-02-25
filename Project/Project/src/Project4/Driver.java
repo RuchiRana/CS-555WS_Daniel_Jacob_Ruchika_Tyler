@@ -9,6 +9,6 @@ public class Driver
 	{
 		Project project04 = new Project("Project/Project/resources/tags.txt","Project/Project/resources/Project04.ged");
 		
-		project04.run();
+		project04.run(); 
 	}
 }

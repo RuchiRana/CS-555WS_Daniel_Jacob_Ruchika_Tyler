@@ -769,7 +769,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 
 				if (dateB == "N/A") {
 					return format.parse("0000-01-01");
-				}
+				} 
 
 				return format.parse(dateB);
 			}
