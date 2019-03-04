@@ -9,9 +9,9 @@ import java.text.*;
 public class Project 
 {	
 	String mdate[] = new String[1000],  fid[] = new String[1000], hid[] = new String[1000], wid[] = new String[1000],
-		   divdate[] = new String[1000];
+		   divdate[] = new String[1000], cid[] = new String[1000], bdate[] = new String[1000];
 	String iid[] = new String[1000], ddate[]  = new String[1000];
-	int c=0, c1=0, d=0, d1=0 ;
+	int c=0, c1=0, d=0, d1=0, e=0, e1=0 ;
 	
 	
 	boolean boo = true;
@@ -211,7 +211,7 @@ public class Project
 		
 		if(tag.equals("FAMC")) //Children
 		{
-			saveIndi[8] = "{" + data + "}";
+			saveIndi[8] = data;
 			//indiDetails.add(saveIndi);		 	
 		}
 		
@@ -269,7 +269,7 @@ public class Project
 		
 		if(tag.equals("CHIL"))
 		{
-			saveFam[7] = "{" + data + "}";
+			saveFam[7] =  data;
 		}
 		
 		if(tag.equals("DATE"))
@@ -409,7 +409,7 @@ public class Project
 						 }
 					}
 					if (!foo)
-						System.out.println("Error: FAMILY: US05: " + fid[i] + ": Married " + mdate[i] + " after husband's (" + hid[i] + ") death on " + ddate[j]+ "\n");
+						System.out.println("Error: FAMILY: US05: " + fid[i] + ": Married " + mdate[i] + " after husband's (" + hid[i] + ") death on " + ddate[j]);
 				}	
 				
 				else if( wid[i].compareTo(iid[j]) == 0 && !ddate[j].equals("N/A") )
@@ -441,7 +441,7 @@ public class Project
 					}
 					if (!foo)
 					{
-						System.out.println("Error: FAMILY: US05: " + fid[i] + ": Married " + mdate[i] + " after wife's (" + wid[i] + ") death on " + ddate[j]+ "\n");
+						System.out.println("Error: FAMILY: US05: " + fid[i] + ": Married " + mdate[i] + " after wife's (" + wid[i] + ") death on " + ddate[j]);
 					}
 				}
 			}
@@ -516,7 +516,7 @@ public class Project
 						 }
 					}
 					if (!foo)
-						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after husband's (" + hid[i] + ") death on " + ddate[j]+ "\n");
+						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after husband's (" + hid[i] + ") death on " + ddate[j]);
 				}	
 				
 				if( wid[i].compareTo(iid[j]) == 0 && !ddate[j].equals("N/A") && !divdate[i].equalsIgnoreCase("N/A"))
@@ -548,8 +548,87 @@ public class Project
 					}
 					if (!foo)
 					{
-						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after wife's (" + wid[i] + ") death on " + ddate[j]+ "\n");
+						System.out.println("Error: FAMILY: US06: " + fid[i] + ": Divorced " + divdate[i] + " after wife's (" + wid[i] + ") death on " + ddate[j]);
 					}
+				}
+			}
+		}
+	}
+	
+	public void resultstory8()
+	{
+		//Sets the value of variables
+		for(int i = 0; i < famDetails.size(); i++)
+		{
+			for(int j  = 0; j <famDetails.get(i).length; j++)
+			{
+				if(famDetails.get(i)[j].contains("@F"))
+				{
+					if(famDetails.get(i)[7].equals("N/A"))
+					{
+					cid[e] = "N/A";
+					}
+					else
+					{
+					String[] result0 = famDetails.get(i)[0].split("@");
+		  			fid[e] = result0[1]; //Family ID
+					mdate[e] = famDetails.get(i)[1]; //Divorce date
+					String[] result1 = famDetails.get(i)[7].split("@");
+					cid[e] = result1[1]; //Children's ID
+					e++;
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < indiDetails.size(); i++)
+		{
+			for(int j  = 0; j <indiDetails.get(i).length; j++)
+			{
+				if(indiDetails.get(i)[j].contains("@I"))
+				{
+					String[] result1 = indiDetails.get(i)[0].split("@");
+		  			iid[e1] = result1[1]; // Individual ID
+					bdate[e1] = indiDetails.get(i)[3]; // Birth date
+					e1++;
+				}
+			}
+		}
+		//Implements story 8 and prints
+		for(int i = 0; i < famDetails.size(); i++)
+		{	
+			for(int j = 0; j < indiDetails.size(); j++)
+			{
+				boolean foo = false;
+				if( !cid[i].equals("N/A") && cid[i].compareTo(iid[j]) == 0 && !bdate[j].equals("N/A") && !mdate[i].equalsIgnoreCase("N/A") )
+				{	
+					String[] mdate1 = mdate[i].split("-");
+					String myear = mdate1[0];   String mmonth = mdate1[1];   String mday = mdate1[2];
+					
+					String[] bdate1 = bdate[j].split("-");
+					String byear = bdate1[0];   String bmonth = bdate1[1];	String bday = bdate1[2];
+					
+					if(Integer.parseInt(myear) < Integer.parseInt(byear))
+					{
+						foo = true;
+					}
+					
+					else if(Integer.parseInt(myear) == Integer.parseInt(byear))
+					{
+						 if(Integer.parseInt(mmonth) < Integer.parseInt(bmonth))
+						 {
+								foo = true;
+						 }			 	
+						 else if(Integer.parseInt(mmonth) == Integer.parseInt(bmonth))
+						 {
+							 if(Integer.parseInt(mday) <= Integer.parseInt(bday))
+							 {
+								foo = true;
+							 }	
+						 }
+					}
+					if (!foo)
+						System.out.println("Error: FAMILY: US08: " + cid[i] + ": born " + bdate[j] + " before marriage's on " + mdate[i]);
 				}
 			}
 		}
@@ -696,8 +775,25 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 		//return true;
 	}
-	
-	//Story 7
+
+	public static Date getIndiBirthDate(List<String[]> indi, String id) throws ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		for (int i=0; i < indi.size(); i++) {
+
+			if (indi.get(i)[0].equals(id)) {
+				String dateB = indi.get(i)[3];
+
+				if (dateB == "N/A") {
+					return format.parse("0000-01-01");
+				}
+
+				return format.parse(dateB);
+			}
+		}
+		return format.parse("0000-01-01");
+	}
+
 	public static void checkDBB(List<String[]> indi) throws ParseException
 	{
 		Period p;
@@ -758,25 +854,6 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			
 		}
 	}
-
-	public static Date getIndiBirthDate(List<String[]> indi, String id) throws ParseException{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-		for (int i=0; i < indi.size(); i++) {
-
-			if (indi.get(i)[0].equals(id)) {
-				String dateB = indi.get(i)[3];
-
-				if (dateB == "N/A") {
-					return format.parse("0000-01-01");
-				} 
-
-				return format.parse(dateB);
-			}
-		}
-		return format.parse("0000-01-01");
-	}
-
 	public void run() throws IOException, ParseException
 	{
 		BufferedReader proj = null;
@@ -932,36 +1009,35 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		  	}
 			System.out.println();
 			
-			//Story 5
-	    	resultstory5();
-			
-			//Story 6
-	    	resultstory6();
-	    	
-	    	// Story 1
+			// Story 1
 			datesBeforeCurrent(indiDetails, famDetails);
 			
-			// Story 4
-			marriageBeforeDivorce(famDetails);
-
 			// Story 2
 			checkBBM(indiDetails, famDetails);
 
 			//Story3
 			checkBBD(indiDetails);
 			
-			//Story 7
-			checkDBB(indiDetails);
+			// Story 4
+			marriageBeforeDivorce(famDetails);
 			
+			//Story 5
+	    	resultstory5();
+			
+			//Story 6
+	    	resultstory6();
+	    	
+	    	//Story 7
+			checkDBB(indiDetails);
+	    	
+	    	//story8
+	    	resultstory8();
 	   }
-	   
-							   
+	      
 	   catch(IOException e)
 	   {
 	   	System.out.println("Project File Not Found");
 	   	e.printStackTrace();
 	   }  
-	   
 	}
-	
 }
