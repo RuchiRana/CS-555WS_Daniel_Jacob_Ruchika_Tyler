@@ -207,17 +207,16 @@ public class Project
 				saveIndi[6] = dataArr[4];; //Death date
 			}
 		}
-		if(tag.equals("FAMS")) //Spouses
+		if(tag.equals("FAMC")) //Children
 		{
 			saveIndi[7] = "{" + data + "}";
 		}
 		
-		if(tag.equals("FAMC")) //Children
+		if(tag.equals("FAMS")) //Spouses
 		{
-			saveIndi[8] = data;
+			saveIndi[8] = "{" + data + "}";
 			//indiDetails.add(saveIndi);		 	
 		}
-		
 		prevTag = tag;
 	}
 	
@@ -269,7 +268,7 @@ public class Project
 			//Get Wife Name
 			saveFam[6] = names.get(data);
 		}
-		
+
 		if(tag.equals("CHIL"))
 		{
 			String data1="", data2="";
@@ -284,7 +283,6 @@ public class Project
 				saveFam[7] = "{'" + data2 +"," + data1 + "'}";
 			}
 		}
-		
 		if(tag.equals("DATE"))
 		{
 			if(famPrevTag.equals("MARR"))
@@ -582,7 +580,7 @@ public class Project
 					String[] result0 = famDetails.get(i)[0].split("@");
 		  			fid[e] = result0[1]; //Family ID
 					mdate[e] = famDetails.get(i)[1]; //Divorce date
-					String[] result1 = famDetails.get(i)[7].split("@");
+					String[] result1 = famDetails.get(i)[7].split("'");
 					cid[e] = result1[1]; //Children's ID
 					e++;
 					}
@@ -642,6 +640,93 @@ public class Project
 			}
 		}
 	}
+	
+	public void No_bigamy() throws ParseException
+	{
+		Date marriage = new Date(), death = new Date(), samemarriage = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		//Sets the value of variables
+		for(int i = 0; i < famDetails.size(); i++)
+		{
+			String fid="",samehid="" , hid="", wid="", samewid="";
+			if (!(famDetails.get(i)[1].contains("N/A")))
+			{
+				marriage = format.parse(famDetails.get(i)[1]);
+				String[] result0 = famDetails.get(i)[0].split("@");    fid = result0[1]; //Family's ID
+				String[] result1 = famDetails.get(i)[3].split("@");    hid = result1[1]; //Husband's ID
+				String[] result2 = famDetails.get(i)[5].split("@");    wid = result2[1]; //Wife's ID
+			}
+  			for(int j = i+1; j < famDetails.size(); j++)
+  			{
+  				String[] result4 = famDetails.get(j)[3].split("@");    samehid = result4[1]; //Husband's ID
+  				String[] result5 = famDetails.get(j)[5].split("@");    samewid = result5[1]; //Wife's ID
+  				samemarriage = format.parse(famDetails.get(j)[1]);
+  				if (hid.compareTo(samehid) == 0)
+  				{
+  					if(marriage.compareTo(samemarriage)==0)
+  						System.out.println("Error: FAMILY: US11: " + fid + ": MarriageOnSameDay ocuurs of husband (" + hid + ") and wife (" + wid 
+  								+ ") during marriage to another wife (" + samewid + ") on " + format.format(samemarriage));
+  				}
+  				if (wid.compareTo(samewid) == 0)
+  				{
+  					if(marriage.compareTo(samemarriage)==0)
+  						System.out.println("Error: FAMILY: US11: " + fid + ": MarriageOnSameDay ocuurs of wife (" + wid + ") and husband (" + hid 
+  								+ ") during marriage to another husband (" + samehid + ") on " + format.format(samemarriage));
+  				}
+  			}
+		}
+	}
+	
+	public void MaleLastNames() throws ParseException
+	{
+		//Sets the value of variables
+		for(int i = 0; i < famDetails.size(); i++)
+		{
+			String fid="", hid="", cid="", iid="", hln="", cln="";
+			if (!(famDetails.get(i)[1].contains("N/A")))
+			{
+				String[] result0 = famDetails.get(i)[0].split("@");    fid = result0[1]; //Family's ID
+				String[] result1 = famDetails.get(i)[3].split("@");    hid = result1[1]; //Husband's ID
+				if(!(famDetails.get(i)[7].contains("N/A")))
+				{
+					String[] result2 = famDetails.get(i)[7].split("'");    cid = result2[1]; //Children's ID
+				}
+			}
+			for(int j = 0; j < indiDetails.size(); j++)
+  			{	
+				String[] result4 = indiDetails.get(j)[0].split("@");    iid = result4[1]; //Individula's ID
+				if(hid.compareTo(iid) == 0)
+  				{
+  					String[] result00 = indiDetails.get(j)[1].split("/");    hln = result00[1]; //Husband's LastName
+  				}
+  			}
+  			for(int j = 0; j < indiDetails.size(); j++)
+  			{
+  				String[] result4 = indiDetails.get(j)[0].split("@");    iid = result4[1]; //Individula's ID
+  				String[] cid1 = new String[cid.length()];
+  				
+  				if(cid.length()>3)
+  				{
+  					String[] h = cid.split(",");
+  					for(int kk=0; kk<h.length; kk++)
+  					{
+  						if(h[kk].compareTo(iid) == 0)
+  						{
+  							String[] result00 = indiDetails.get(j)[1].split("/");    cln = result00[1];
+  							if(indiDetails.get(j)[2].matches("M") && hln.compareTo(cln) != 0)						
+  								System.out.println("Error: FAMILY: US16: " + fid + ": Male members of the family does not have the same last name. Father's (" + hid + ") last name: " + hln + " and Son's (" + h[kk] + ") last name: " + cln );
+  						}
+  					}
+  				}
+  				else if(cid.compareTo(iid) == 0)
+  				{
+  					if(indiDetails.get(j)[2].matches("M")&& hln.compareTo(cln) != 0)
+  						System.out.println("Error: FAMILY: US16: " + fid + ": Male members of the family does not have the same last name. Father's (" + hid + ") last name: " + hln + " and Son's (" + cid + ") last name: " + cln );
+  				}
+  			}
+		}
+	}
+	
 	
 	
 	public boolean compare(String computed)
@@ -907,7 +992,8 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		return true;
 	}
 
-	public static boolean checkMA14(List<String[]> indi, List<String[]> fam) throws ParseException{
+	public static boolean checkMA14(List<String[]> indi, List<String[]> fam) throws ParseException
+	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i=0; i < fam.size(); i++) {
 			String dateM = fam.get(i)[1];
@@ -942,6 +1028,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		return true;
 	}
 	
+
 	public ArrayList<String> getFamChildren(List<String[]> fam, int i)
 	{
 		ArrayList<String> children = new ArrayList<String>();
@@ -1076,6 +1163,47 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 		
 		return validStatus;
+	}
+	
+	public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) {
+		
+		for (int i = 0; i < indi.size(); i++) {
+			for (int j = 0; j < fam.size(); j++) {
+				if (indi.get(i)[7] != "N/A" && indi.get(i)[7] == fam.get(j)[0]) {
+					if (fam.get(j)[3] != "N/A" && fam.get(j)[5] != "N/A") {
+						for (int k = 0; k < indi.size(); k++) {
+							if (indi.get(k)[0] == fam.get(j)[3] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 80) {
+								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Father of this individual is more than 80 years older than him/her.");
+							}
+							
+							if (indi.get(k)[0] == fam.get(j)[5] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 60) {
+								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Mother of this individual is more than 60 years older than him/her.");
+
+							}
+						}
+					}
+				}
+			}
+			 
+		}
+	}
+	
+	public void multipleBirths(List<String[]> indi) {
+		
+		for (int i = 0; i < indi.size(); i++) {
+			
+			int counter = 1;
+			
+			for (int j = i + 1; j < indi.size(); j++) {
+				if (indi.get(i)[7] == indi.get(j)[7] && indi.get(i)[3] == indi.get(j)[3]) {
+					counter++;
+				}
+			}
+			
+			if (counter > 5) {
+				System.out.println("ERROR: FAMILY: US14: " + indi.get(i)[7] + ": Family has more than 5 children with the same birthday.");
+			}
+		}
 	}
 
 	//Takes in a date formatted in DD-MMM-YYYY and returns a String array
@@ -1405,6 +1533,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			
 			//Story 15
 			checkSibCount(famDetails);
+
+	    	//story 11
+			No_bigamy();
+	    	
+	    	//story 16
+	    	MaleLastNames();
 
 	   }
 	      
