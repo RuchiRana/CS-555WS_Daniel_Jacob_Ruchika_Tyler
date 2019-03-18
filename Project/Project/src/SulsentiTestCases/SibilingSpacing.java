@@ -22,7 +22,7 @@ public class SibilingSpacing
 		children.add(childOne);
 		children.add(childTwo);
 		
-		String[] famOne = {"@F1@", "","","","","","","{'I1,I2'}"}; 
+		String[] famOne = {"@F1@", "","","","","","","{'I1,I2'}"};  
 		List<String[]> fam = new ArrayList<String[]>();
 		fam.add(famOne);
 		

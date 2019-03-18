@@ -1208,7 +1208,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				{
 					System.out.println("ERROR IN US15: FAMILY " + fam.get(i)[0] + " HAS " + childrenOfFam.size() + " CHILDREN WHEN THE MAXIMUM EXPECTED IS 15");
 					return false;
-				}
+				} 
 			}
 		}
 		

@@ -87,7 +87,7 @@ public class SiblingCount
 		boolean valid = testProj.checkSibCount(fam);
 		
 		//Expected True;
-		assertTrue(valid);
+		assertTrue(valid); 
 	}
 	
 }
