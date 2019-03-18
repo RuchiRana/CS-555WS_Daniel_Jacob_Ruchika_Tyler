@@ -1,4 +1,4 @@
-package Project4;
+package project6;
 
 import java.io.*;
 import java.time.*;
@@ -178,19 +178,19 @@ public class Project
 		}
 		if(tag.equals("DATE"))
 		{
-			
 			//HANDLE AGE
 			if(prevTag.equals("BIRT"))
 			{
-    			String month = dates.get(data.substring(data.indexOf(" ") + 1).substring(0,data.substring(data.indexOf(" ") + 1).indexOf(" ")));
-    			String day = data.substring(0,data.indexOf(" "));
-    			String year = data.substring(data.indexOf(" ") + 1).substring(data.substring(data.indexOf(" ") + 1).indexOf(" ") + 1);
-    			
-				saveIndi[3] = year + "-" + month + "-" + day;
+				//Save the date
+				String[] dataArr = getFormattedDate(data);
+				saveIndi[3] = dataArr[4];
+				
+				//automated Test
+				checkDates(dataArr);
 				
 				//Handle age
 				LocalDate today = LocalDate.now(); //Todays date                         
-				LocalDate birthday = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));  //Birth date
+				LocalDate birthday = LocalDate.of(Integer.parseInt(dataArr[3]), Integer.parseInt(dataArr[2]), Integer.parseInt(dataArr[1]));  //Birth date
 				Period p = Period.between(birthday, today);
 				
 				//Age will be the caluclated year
@@ -199,12 +199,12 @@ public class Project
 		
 			if(prevTag.equals("DEAT"))
 			{
-				String month = dates.get(data.substring(data.indexOf(" ") + 1).substring(0,data.substring(data.indexOf(" ") + 1).indexOf(" ")));
-    			String day = data.substring(0,data.indexOf(" "));
-    			String year = data.substring(data.indexOf(" ") + 1).substring(data.substring(data.indexOf(" ") + 1).indexOf(" ") + 1);
+				//Save the date
+				String[] dataArr = getFormattedDate(data);
+				checkDates(dataArr);
     			
     			saveIndi[5] = "False"; //Dead
-				saveIndi[6] = year + "-" + month + "-" + day; //Death date
+				saveIndi[6] = dataArr[4];; //Death date
 			}
 		}
 		if(tag.equals("FAMS")) //Spouses
@@ -272,28 +272,34 @@ public class Project
 		
 		if(tag.equals("CHIL"))
 		{
-			saveFam[7] =  data;
+			String data1="", data2="";
+			String[] result = data.split("@");    data1 = result[1];
+			if(saveFam[7].contains("N/A"))
+			{
+				saveFam[7] = "{'" + data1 + "'}";
+			}
+			else
+			{
+				String[] result1 = saveFam[7].split("'");    data2 = result1[1];
+				saveFam[7] = "{'" + data2 +"," + data1 + "'}";
+			}
 		}
 		
 		if(tag.equals("DATE"))
 		{
 			if(famPrevTag.equals("MARR"))
 			{
-				String month = dates.get(data.substring(data.indexOf(" ") + 1).substring(0,data.substring(data.indexOf(" ") + 1).indexOf(" ")));
-    			String day = data.substring(0,data.indexOf(" "));
-    			String year = data.substring(data.indexOf(" ") + 1).substring(data.substring(data.indexOf(" ") + 1).indexOf(" ") + 1);
-    			
-				saveFam[1] = year + "-" + month + "-" + day;
+				String[] dataArr = getFormattedDate(data);	
+				checkDates(dataArr);
+				saveFam[1] = dataArr[4];
 				famDetails.add(saveFam);
 			}
 			else if(famPrevTag.equals("DIV"))
 			{
-				String month = dates.get(data.substring(data.indexOf(" ") + 1).substring(0,data.substring(data.indexOf(" ") + 1).indexOf(" ")));
-    			String day = data.substring(0,data.indexOf(" "));
-    			String year = data.substring(data.indexOf(" ") + 1).substring(data.substring(data.indexOf(" ") + 1).indexOf(" ") + 1);
-				saveFam[2] = year + "-" + month + "-" + day;
+				String[] dataArr = getFormattedDate(data);	
+				checkDates(dataArr);
+				saveFam[2] = dataArr[4];
 			}
-			
 		}
 		
 		famPrevTag = tag;
@@ -888,17 +894,17 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 
 					if (db.before(dad)) {
 						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Father death " + dad.toString() + " is before child birth date " + db.toString());
-						//return false;
+						return false;
 					}
 
 					if (db.after(mom)) {
 						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Mother death " + mom.toString() + " is before birth date date " + db.toString());
-						//return false;
+						return false;
 					}
 				}
 			}
 		}
-		//return true;
+		return true;
 	}
 
 	public static boolean checkMA14(List<String[]> indi, List<String[]> fam) throws ParseException{
@@ -925,17 +931,290 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 
 			if (mYear - hYear < 14) {
 				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Husband birthdate " + husb.toString() + " is less than 14 years before marriage date " + dm.toString());
-				//return false;
+				return false;
 			}
 
 			if (mYear - wYear < 14) {
 				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Wife birthdate " + wife.toString() + " is less than 14 years before marriage date " + dm.toString());
-				//return false;
+				return false;
 			}
 		}
-		//return true;
+		return true;
+	}
+	
+	public ArrayList<String> getFamChildren(List<String[]> fam, int i)
+	{
+		ArrayList<String> children = new ArrayList<String>();
+		
+		String childString = fam.get(i)[7];
+		String rest = childString;
+		String childTwo = "";
+		
+		//Find the first Spilt
+		int comma = childString.indexOf(",");
+		
+		//Get the first Child
+		String childOne = childString.substring(comma - 2, comma);
+		children.add(childOne);
+		
+		//Set up the rest of the string minus the first child
+		rest = childString.substring(comma + 1);
+		
+		//Find the next comma & the end
+		int nextComma = rest.indexOf(",");
+		int end = rest.indexOf("'}");
+		
+		while(rest.length() > 2)
+		{		
+			if(nextComma == -1)
+			{
+				childTwo = rest.substring(0, end);
+				rest = rest.substring(rest.indexOf(childTwo) + childTwo.length());
+				children.add(childTwo);
+			}
+			else
+			{
+				childTwo = rest.substring(0, nextComma);
+				children.add(childTwo);
+				rest = rest.substring(nextComma + 1);
+			}
+			
+			nextComma = rest.indexOf(",");
+			end = rest.indexOf("'}");
+		}
+		
+		return children;		
+	}
+	public String getChildBirthDate(String id,List<String[]> indi, List<String[]> fam)
+	{
+		String rtnDate = "";
+		for(int i = 0; i < indi.size(); i++)
+		{
+			//Get The string
+			String searchID = indi.get(i)[0].substring(1,indi.get(i)[0].length() - 1);
+			if(searchID.equals(id))
+			{
+				rtnDate = indi.get(i)[3];
+				return rtnDate;
+			}
+		}
+		return null;
+	}
+	
+	public boolean checkValidSibilingBirthDates(ArrayList<String> children, List<String[]> indi, List<String[]> fam)
+	{
+		for(int i = 1; i < children.size(); i++)
+		{
+			//Get previous child
+			String prevC = children.get(i - 1);
+			String currC = children.get(i);
+			
+			String prevBirthDate = getChildBirthDate(prevC,indi, fam);
+			String curBrithDate = getChildBirthDate(currC, indi, fam);
+		
+			
+			String[] prevCom = getComponents(prevBirthDate);
+			LocalDate prevBDate = LocalDate.of(Integer.parseInt(prevCom[0]), Integer.parseInt(prevCom[1]), Integer.parseInt(prevCom[2]));
+			String[] curCom = getComponents(curBrithDate);
+			LocalDate curBDate = LocalDate.of(Integer.parseInt(curCom[0]), Integer.parseInt(curCom[1]), Integer.parseInt(curCom[2]));
+			
+			Period p = Period.between(prevBDate, curBDate);
+			
+			//Check for Twins
+			//Are the years the same?
+			boolean validTwins = false;
+			if(prevCom[0].equals(prevCom[0]))
+			{
+				//Are the months the same?
+				if(prevCom[1].equals(curCom[1]))
+				{
+					//Are they Twins and valid?
+					if(Math.abs(p.getDays()) >= 2)
+					{
+						//Not Valid
+						System.out.println("ERROR IN US13: TWINS " + prevC + " AND " + currC + " HAVE BIRTHDATES GREATER THAN TWO DAYS");
+						return false;
+					}
+					else
+					{
+						validTwins = true;
+					}
+				}
+			}
+			
+			//Others
+			if(!validTwins && Math.abs(p.getYears()) < 1) //The months do not matter if there is a >=2 year difference
+			{
+				if(Math.abs(p.getMonths()) <= 8);
+				{
+					System.out.println("ERROR IN US13: SIBLINGS " + prevC + " AND " + currC + " HAVE BIRTHDAYS UNDER 8 MONTHS AT " + Math.abs(p.getMonths()) + " MONTHS");
+					return false;
+				}
+			}
+			
+		}	
+		return true;
+	}
+	
+	public boolean checkSS(List<String[]> indi, List<String[]> fam)
+	{
+		//Get the children
+		//Check for Multiple Children
+		ArrayList<String> children = new ArrayList<String>();
+		boolean validStatus = true;
+		for(int i = 0; i < fam.size(); i++)
+		{
+			if(fam.get(i)[7].indexOf(",") > 0) //Multiple Children
+			{
+				children = getFamChildren(fam, i); //Get the children
+				validStatus = checkValidSibilingBirthDates(children, indi, fam); 
+			}
+			else //less than 0 means one child
+			{
+				//Nothing happens
+			}
+		}
+		
+		return validStatus;
 	}
 
+	//Takes in a date formatted in DD-MMM-YYYY and returns a String array
+		//where 0 is the original date, 1 is the day, 2 is the month in MM, 3 is the year and 4 is the new formatted date in YYYY-MM-DD
+		private String[] getFormattedDate(String data)
+		{
+			//Store the data
+			String[] rtn = new String[5];
+			rtn[0] = data;
+			//Get Day
+			//Find where the day number ends
+			int daySplitIndex = data.indexOf(" ");
+			String day = data.substring(0,daySplitIndex);
+			rtn[1] = day;
+					
+			//Get Month
+			//Find out where the day ends and take into account the space (1)
+			int monthIndex = daySplitIndex + 1;
+			//Get the remaining String for other units.
+			String month = data.substring(monthIndex);
+			String year = month;
+			//Find out where month ends in the string
+			int monthSplitIndex = month.indexOf(" ");
+			//Get the month
+			month = month.substring(0,  monthSplitIndex);
+			//Get the number of the month
+			month = dates.get(month);
+			rtn[2] = month;
+			
+			//Get Year
+			//Get the rest of the string and split it where the month ended. Include +1 for the space
+			year = year.substring(monthSplitIndex + 1);
+			rtn[3] = year;
+			rtn[4] = year + "-" + month + "-" + day;
+				
+			return  rtn;
+		}
+		
+		//Returns the components of a date formatted in YYYY MM DD into an array where 0 is YYYY, 1 is MM and 2 is DD
+		private String[] getComponents(String date)
+		{
+			String[] rtn = new String[3]; 
+		
+			int yearIndex = date.indexOf("-");
+			String year = date.substring(0,yearIndex);
+			rtn[0] = year;
+			
+			String month = date.substring(yearIndex + 1);
+			String day = month;
+			int monthIndex = month.indexOf("-");
+			month = month.substring(0,monthIndex);
+			rtn[1] = month;
+			
+			day = day.substring(monthIndex + 1);
+			rtn[2] = day;
+			
+			return rtn;
+		}
+		
+		//This automated method will check the two refactors made in the code.
+		private void checkDates(String[] data)
+		{
+			Boolean pass = true;
+			String[] newComponents = getComponents(data[4]);
+			//Dates must be in YYYY MM DD format
+			for(int i = 0; i < data.length; i++)
+			{
+				
+				
+				//Check Year
+				if(data[3].length() != 4)
+				{
+					pass = false;
+					System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[3].length() + " YEAR IS GREATER THAN THE EXPECTED VALUE OF 4");
+				}
+				//Check Month length
+				if(data[2].length() != 2)
+				{
+					pass = false;
+					System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[2].length() + " MONTH IS GREATER THAN THE EXPECTED VALUE OF 2");
+					//Check Month Validity
+					if(Integer.parseInt(data[2]) < 1 || Integer.parseInt(data[2]) > 12)
+					{
+						pass = false;
+						System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[2].length() + " MONTH IS NOT IN THE EXPECTED RANGE OF 01-12");
+						
+					}
+				}
+				//Check Day length
+				if(data[1].length() != 2)
+				{
+					pass = false;
+					System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[1].length() + " DAY IS GREATER THAN THE EXPECTED VALUE OF 2");
+					//Check Day Validity
+					if(Integer.parseInt(data[1]) < 1 || Integer.parseInt(data[1]) > 31)
+					{
+						pass = false;
+						System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[1].length() + " DAY IS NOT IN THE EXPECTED RANGE OF 01-31");
+					}
+				}
+					
+				//Check date validity
+				LocalDate origDate = LocalDate.of(Integer.parseInt(data[3]), Integer.parseInt(data[2]), Integer.parseInt(data[1])); //Todays date                         
+				LocalDate newDate = LocalDate.of(Integer.parseInt(newComponents[0]), Integer.parseInt(newComponents[1]), Integer.parseInt(newComponents[2]));  //Birth date
+				Period p = Period.between(origDate, newDate);
+				
+				if(!p.isZero())
+				{
+					pass = false;
+					System.out.println("ERROR IN REFACTORED CODE FOR DATES: THE ORIGINAL DATE: " + data[0] + " IS DIFFERENT THAN THE NEW FORMATTED DATE: " + data[4]);
+				}
+				
+			}
+			
+			if(!pass)
+			{
+				System.out.println("ERROS IN REFACTORED CODE FOUND PLEASE CHECK ABOVE FOR ERROR DETAILS");
+			}
+		}
+		
+	public boolean checkSibCount(List<String[]> fam)
+	{
+		ArrayList<String> childrenOfFam = new ArrayList<String>();
+		for(int i = 0; i < fam.size(); i++)
+		{
+			if(fam.get(i)[7].indexOf(",") > 0) //Multiple Children
+			{
+				childrenOfFam = getFamChildren(fam,i);
+				if(childrenOfFam.size() > 15)
+				{
+					System.out.println("ERROR IN US15: FAMILY " + fam.get(i)[0] + " HAS " + childrenOfFam.size() + " CHILDREN WHEN THE MAXIMUM EXPECTED IS 15");
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	public void run() throws IOException, ParseException
 	{
 		BufferedReader proj = null;
@@ -1091,7 +1370,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		  	}
 			System.out.println();
 			
-			// Story 1
+			/*// Story 1
 			datesBeforeCurrent(indiDetails, famDetails);
 			
 			// Story 2
@@ -1119,7 +1398,13 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	    	checkBBDP(indiDetails, famDetails);
 
 	    	//story10
-	    	checkMA14(indiDetails, famDetails);
+	    	checkMA14(indiDetails, famDetails);*/
+			
+			//Story 13
+			//checkSS(indiDetails,famDetails);
+			
+			//Story 15
+			checkSibCount(famDetails);
 
 	   }
 	      

@@ -1,4 +1,4 @@
-package Project4;
+package project6;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -7,8 +7,8 @@ public class Driver
 {
 	public static void main(String[] args) throws IOException, ParseException
 	{
-		Project project04 = new Project("resources/tags.txt","resources/testFile.ged");
+		Project project06 = new Project("Project/project/resources/tags.txt","Project/project/resources/testFile.ged");
 		
-		project04.run();
+		project06.run();
 	}
 }

@@ -1,4 +1,4 @@
-package sprint2;
+package RuchikaTestCases;
 
 import static org.junit.jupiter.api.Assertions.*;
 
