@@ -1031,6 +1031,47 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 		return true;
 	}
+	
+	public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) {
+		
+		for (int i = 0; i < indi.size(); i++) {
+			for (int j = 0; j < fam.size(); j++) {
+				if (indi.get(i)[7] != "N/A" && indi.get(i)[7] == fam.get(j)[0]) {
+					if (fam.get(j)[3] != "N/A" && fam.get(j)[5] != "N/A") {
+						for (int k = 0; k < indi.size(); k++) {
+							if (indi.get(k)[0] == fam.get(j)[3] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 80) {
+								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Father of this individual is more than 80 years older than him/her.");
+							}
+							
+							if (indi.get(k)[0] == fam.get(j)[5] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 60) {
+								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Mother of this individual is more than 60 years older than him/her.");
+
+							}
+						}
+					}
+				}
+			}
+			 
+		}
+	}
+	
+	public void multipleBirths(List<String[]> indi) {
+		
+		for (int i = 0; i < indi.size(); i++) {
+			
+			int counter = 1;
+			
+			for (int j = i + 1; j < indi.size(); j++) {
+				if (indi.get(i)[7] == indi.get(j)[7] && indi.get(i)[3] == indi.get(j)[3]) {
+					counter++;
+				}
+			}
+			
+			if (counter > 5) {
+				System.out.println("ERROR: FAMILY: US14: " + indi.get(i)[7] + ": Family has more than 5 children with the same birthday.");
+			}
+		}
+	}
 
 	public void run() throws IOException, ParseException
 	{
