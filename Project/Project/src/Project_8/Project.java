@@ -1,4 +1,4 @@
-package Project_8;
+package project6;
 
 import java.io.*;
 import java.time.*;
@@ -156,8 +156,6 @@ public class Project
 			
 			saveIndi[0] =  data;
 			//set defaults
-			saveIndi[3] = "N/A"; //Birth-date
-			saveIndi[4] = "N/A"; //Age
 			saveIndi[5] = "True"; //Alive
 			saveIndi[6] = "N/A"; //Death
 			saveIndi[7] = "N/A"; //Child
@@ -575,7 +573,7 @@ public class Project
 				{
 					if(famDetails.get(i)[7].equals("N/A"))
 					{
-						cid[e] = "N/A";
+					cid[e] = "N/A";
 					}
 					else
 					{
@@ -1392,59 +1390,47 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		//return true;
 	}
 	
-	public void UniqueIDs()
-	{
-		for(int i = 0 ; i<indiDetails.size()-1 ; i++)
-		{
-			String[] result = indiDetails.get(i)[0].split("@");
-			String id = result[1];
-			for(int j = i+1 ; j<indiDetails.size() ; j++)
-			{
-				String[] result1 = indiDetails.get(j)[0].split("@");
-				String id1 = result1[1];
-				if(id1.compareToIgnoreCase(id) == 0)
-				{
-					System.out.println("Error: Individual: US022: Individual IDs " + id + " and " + id1 +
-		 						" are identical. " + "\n");
-				}
-			}
-		}// for individuals
+	public void noMarriagesToChildren(List<String[]> indi, List<String[]> fam) {
 		
-		for(int i = 0 ; i<famDetails.size()-1 ; i++)
-		{
-			String[] result = famDetails.get(i)[0].split("@");
-			String id = result[1];
-			for(int j = i+1 ; j<famDetails.size() ; j++)
-			{
-				String[] result1 = famDetails.get(j)[0].split("@");
-				String id1 = result1[1];
-				if(id1.compareToIgnoreCase(id) == 0)
-				{
-					System.out.println("Error: Family: US022: Family IDs " + id + " and " + id1 +
-		 						" are identical. ");
+		String[] children;
+		String withoutBrace;
+		String withoutBrace2;
+		
+		for (int i = 0; i < fam.size(); i++) {
+			withoutBrace = fam.get(i)[7].substring(1);
+			withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 1);
+			children = withoutBrace2.split(",", 0);
+			for (int j = 0; j < children.length; j++) {
+				for (int k = 0; k < indi.size(); k++) {
+					if (indi.get(k)[1] == children[j]) {
+						if (indi.get(k)[1] == fam.get(i)[3]) {
+							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Mom married the kid.");
+						} else if (indi.get(k)[1] == fam.get(i)[6]) {
+							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Dad married the kid.");
+						}
+					}
 				}
 			}
-		} //for families
+		}
 	}
-
-	public void UniqueNameAndBdate() throws ParseException
-	{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		for(int i = 0 ; i<indiDetails.size()-1 ; i++)
-		{
-			String name = indiDetails.get(i)[1];
-			Date bdate = format.parse(indiDetails.get(i)[3]);
-			for(int j = i+1 ; j<indiDetails.size() ; j++)
-			{
-				String name1 = indiDetails.get(j)[1];
-				Date bdate1 = format.parse(indiDetails.get(j)[3]);
-				if(name.compareToIgnoreCase(name1) == 0)
-					if(bdate.compareTo(bdate1) == 0)
-						System.out.println("Error: Individual: US023: " + "Same name '"+ name + "' and same birth date '" 
-					+ format.format(bdate) +"' appears in GEDCOM.");
-				//System.out.println("FAM       : " + famDetails.size());
+	
+	public void siblingShouldNotMarry(List<String[]> indi, List<String[]> fam) {
+		
+		ArrayList<String> allChildren = new ArrayList<String>();
+		
+		for (int i = 0; i < fam.size(); i++) {
+			String withoutBrace = fam.get(i)[7].substring(1);
+			String withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 1);
+			allChildren.add(withoutBrace2);
+		}
+		
+		for (int j = 0 ; j < fam.size(); j++) {
+			for (int k = 0; k < allChildren.size(); k++) {
+				if (allChildren.get(k).contains(fam.get(j)[3]) && allChildren.get(k).contains(fam.get(j)[5])) {
+					System.out.println("ERROR: FAMILY: US18: " + fam.get(j)[0] + ": Two siblings in this family are married.");
+				}
 			}
-		}// for individuals
+		}
 	}
 	
 	public void run() throws IOException, ParseException
@@ -1475,7 +1461,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		    			break;
 		    		
 		    		case 1:
-		    			list1.add(tag);
+		    			list1.add(tag); 
 		    			break;
 		    			
 		    		case 2:
@@ -1624,7 +1610,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			checkDBB(indiDetails);
 	    	
 	    	//story8
-	    	//resultstory8();
+	    	resultstory8();
 
 	    	//story9
 	    	checkBBDP(indiDetails, famDetails);
@@ -1633,7 +1619,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	    	checkMA14(indiDetails, famDetails);
 			
 			//Story 13
-			//checkSS(indiDetails,famDetails);
+			checkSS(indiDetails,famDetails);
 			
 			//Story 15
 			checkSibCount(famDetails);
@@ -1649,12 +1635,6 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 
 	    	//story 24
 	    	checkUS(famDetails);
-	    	
-	    	//Story 22
-			UniqueIDs();
-			
-			//story 23
-			UniqueNameAndBdate();
 
 	   }
 	      
