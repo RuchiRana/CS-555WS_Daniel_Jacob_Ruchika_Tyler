@@ -1759,7 +1759,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			System.out.println();
 			
 			// Story 1
-			/*datesBeforeCurrent(indiDetails, famDetails);
+			datesBeforeCurrent(indiDetails, famDetails);
 			
 			// Story 2
 			checkBBM(indiDetails, famDetails);
@@ -1798,20 +1798,20 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			No_bigamy();
 	    	
 	    	//story 16
-	    	MaleLastNames();*/
+	    	MaleLastNames();
 	    	
 	    	//Story 19
-	    	//firstCousin(indiDetails, famDetails);
+	    	firstCousin(indiDetails, famDetails);
 			
 			//Story20
 			auntsAndUncles(indiDetails, famDetails);
 
 	    	//story 21
-	    	//checkGR(indiDetails, famDetails);
+	    	checkGR(indiDetails, famDetails);
 	    	
 
 	    	//story 24
-	    	//checkUS(famDetails);
+	    	checkUS(famDetails);
 	    	
 
 	   }
