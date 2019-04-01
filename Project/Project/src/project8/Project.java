@@ -1443,20 +1443,24 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		//Check side 1
 		if(husGP[0].equals(wifeGP[0]) && husGP[1].equals(wifeGP[1]))
 		{
+			System.out.println("ERROR IS US19 FIRST COUSINS SHOULD NOT MARRY");
 			return true;
 		}
 		//Check side 1 b
 		if(husGP[0].equals(wifeGP[2]) && husGP[1].equals(wifeGP[3]))
 		{
+			System.out.println("ERROR IS US19 FIRST COUSINS SHOULD NOT MARRY");
 			return true;
 		}
 		//Check side 2
 		if(husGP[2].equals(wifeGP[0]) && husGP[3].equals(wifeGP[1]))
 		{
+			System.out.println("ERROR IS US19 FIRST COUSINS SHOULD NOT MARRY");
 			return true;
 		}
 		if(husGP[2].equals(wifeGP[2]) && husGP[3].equals(wifeGP[3]))
 		{
+			System.out.println("ERROR IS US19 FIRST COUSINS SHOULD NOT MARRY");
 			return true;
 		}
 		
@@ -1583,6 +1587,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 						
 						if(checkAuntUncleMarriageNieceNephew(wifSibsChildren, husID))
 						{
+							System.out.println("ERROR IS US20 AUNTS/UNCLES SHOULD NOT MARRY THEIR NIECE/NEWPHEWS");
 							return true;
 						}
 						
@@ -1594,6 +1599,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 						
 						if(checkAuntUncleMarriageNieceNephew(husSibsChildren, wifeID))
 						{
+							System.out.println("ERROR IS US20 AUNTS/UNCLES SHOULD NOT MARRY THEIR NIECE/NEWPHEWS");
 							return true;
 						}
 						
