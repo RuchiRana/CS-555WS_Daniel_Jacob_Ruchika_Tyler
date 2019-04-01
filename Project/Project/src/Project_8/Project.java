@@ -1,4 +1,4 @@
-package project6;
+package Project_8;
 
 import java.io.*;
 import java.time.*;
@@ -727,29 +727,6 @@ public class Project
 		}
 	}
 	
-	
-	
-	public boolean compare(String computed)
-	{
-		return ("F1".equalsIgnoreCase(computed));
-	}
-	
-	public String testString(String test2)
-	{
-		if(test2.contains("Error"))
-			return "Error";
-		else 
-			return "NOT FOUND.";
-	}
-	
-	public String testString2(String test2)
-	{
-		if(test2.contains("I4"))
-			return "I4";
-		else 
-			return "NOT FOUND.";
-	}
-	
 	public static void checkBBD(List<String[]> indi) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i=0; i < indi.size(); i++) {
@@ -767,6 +744,61 @@ public class Project
 			}
 		}
 		//return true;
+	}
+	
+	public void UniqueIDs()
+	{
+		for(int i = 0 ; i<indiDetails.size()-1 ; i++)
+		{
+			String[] result = indiDetails.get(i)[0].split("@");
+			String id = result[1];
+			for(int j = i+1 ; j<indiDetails.size() ; j++)
+			{
+				String[] result1 = indiDetails.get(j)[0].split("@");
+				String id1 = result1[1];
+				if(id1.compareToIgnoreCase(id) == 0)
+				{
+					System.out.println("Error: Individual: US022: Individual IDs " + id + " and " + id1 +
+		 						" are identical. " + "\n");
+				}
+			}
+		}// for individuals
+		
+		for(int i = 0 ; i<famDetails.size()-1 ; i++)
+		{
+			String[] result = famDetails.get(i)[0].split("@");
+			String id = result[1];
+			for(int j = i+1 ; j<famDetails.size() ; j++)
+			{
+				String[] result1 = famDetails.get(j)[0].split("@");
+				String id1 = result1[1];
+				if(id1.compareToIgnoreCase(id) == 0)
+				{
+					System.out.println("Error: Family: US022: Family IDs " + id + " and " + id1 +
+		 						" are identical. " + "\n");
+				}
+			}
+		} //for families
+	}
+
+	public void UniqueNameAndBdate() throws ParseException
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		for(int i = 0 ; i<indiDetails.size()-1 ; i++)
+		{
+			String name = indiDetails.get(i)[1];
+			Date bdate = format.parse(indiDetails.get(i)[3]);
+			for(int j = i+1 ; j<indiDetails.size() ; j++)
+			{
+				String name1 = indiDetails.get(j)[1];
+				Date bdate1 = format.parse(indiDetails.get(j)[3]);
+				if(name.compareToIgnoreCase(name1) == 0)
+					if(bdate.compareTo(bdate1) == 0)
+						System.out.println("Error: Individual: US023: " + "Same name '"+ name + "' and same birth date '" 
+					+ format.format(bdate) +"' appears in GEDCOM." + "\n");
+				//System.out.println("FAM       : " + famDetails.size());
+			}
+		}// for individuals
 	}
 	
 public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
@@ -1647,6 +1679,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	    	
 	    	// story 18
 	    	siblingShouldNotMarry(indiDetails, famDetails);
+	    	
+	    	//Story 22
+			UniqueIDs();
+			
+			//story 23
+			UniqueNameAndBdate();
 	   }
 	      
 	   catch(IOException e)
