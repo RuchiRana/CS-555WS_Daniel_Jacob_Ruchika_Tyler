@@ -1636,6 +1636,17 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	    	//story 24
 	    	checkUS(famDetails);
 
+	    	// story 12
+	    	parentsNotTooOld(indiDetails, famDetails);
+	    	
+	    	// story 14
+	    	multipleBirths(indiDetails);
+	    	
+	    	// story 17
+	    	noMarriagesToChildren(indiDetails, famDetails);
+	    	
+	    	// story 18
+	    	siblingShouldNotMarry(indiDetails, famDetails);
 	   }
 	      
 	   catch(IOException e)
