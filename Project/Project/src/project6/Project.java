@@ -926,7 +926,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	public static Date getIndiDate(List<String[]> indi, String id, Dates d) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i=0; i < indi.size(); i++) {
-			if (indi.get(i)[0] == id) {
+			if (id.compareTo(indi.get(i)[0]) == 0) {
 
 				String date;
 
@@ -1011,7 +1011,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 	}
 
-	public static boolean checkBBDP(List<String[]> indi, List<String[]> fam) throws ParseException{
+	public static void checkBBDP(List<String[]> indi, List<String[]> fam) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		
 		for (int i=0; i<indi.size(); i++) {
@@ -1032,29 +1032,26 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 					Date dad = getIndiDate(indi, fam.get(j)[3], Dates.DEATH);
 					Date mom = getIndiDate(indi, fam.get(j)[5], Dates.DEATH);
 
-					if (db.before(dad)) {
+					if (db.before(dad) && !dad.equals(new Date(Long.MAX_VALUE))) {
 						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Father death " + dad.toString() + " is before child birth date " + db.toString());
-						return false;
 					}
 
-					if (db.after(mom)) {
+					if (db.after(mom) && !mom.equals(new Date(Long.MAX_VALUE))) {
 						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Mother death " + mom.toString() + " is before birth date date " + db.toString());
-						return false;
 					}
 				}
 			}
 		}
-		return true;
 	}
 
-	public static boolean checkMA14(List<String[]> indi, List<String[]> fam) throws ParseException
+	public static void checkMA14(List<String[]> indi, List<String[]> fam) throws ParseException
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i=0; i < fam.size(); i++) {
 			String dateM = fam.get(i)[1];
 
 			if (dateM == "N/A" || fam.get(i)[3] == "N/A" || fam.get(i)[5] == "N/A") {
-				return true;
+				return;
 			}
 
 			Date dm = format.parse(dateM);
@@ -1072,15 +1069,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 
 			if (mYear - hYear < 14) {
 				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Husband birthdate " + husb.toString() + " is less than 14 years before marriage date " + dm.toString());
-				return false;
 			}
 
 			if (mYear - wYear < 14) {
 				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Wife birthdate " + wife.toString() + " is less than 14 years before marriage date " + dm.toString());
-				return false;
 			}
 		}
-		return true;
 	}
 	
 
