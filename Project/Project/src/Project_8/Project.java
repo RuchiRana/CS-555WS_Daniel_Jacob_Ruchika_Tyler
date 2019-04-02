@@ -1425,15 +1425,17 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		String withoutBrace2;
 		
 		for (int i = 0; i < fam.size(); i++) {
-			withoutBrace = fam.get(i)[7].substring(1);
-			withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 1);
+			withoutBrace = fam.get(i)[7].substring(2);
+			withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 2);
 			children = withoutBrace2.split(",", 0);
 			for (int j = 0; j < children.length; j++) {
 				for (int k = 0; k < indi.size(); k++) {
-					if (indi.get(k)[1] == children[j]) {
-						if (indi.get(k)[1] == fam.get(i)[3]) {
+					String withoutAt = indi.get(k)[0].substring(1);
+					String withoutAt2 = withoutAt.substring(0, withoutAt.length() - 1);
+					if (withoutAt2 == children[j]) {
+						if (indi.get(k)[0] == fam.get(i)[3]) {
 							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Mom married the kid.");
-						} else if (indi.get(k)[1] == fam.get(i)[6]) {
+						} else if (indi.get(k)[0] == fam.get(i)[5]) {
 							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Dad married the kid.");
 						}
 					}
@@ -1447,14 +1449,18 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		ArrayList<String> allChildren = new ArrayList<String>();
 		
 		for (int i = 0; i < fam.size(); i++) {
-			String withoutBrace = fam.get(i)[7].substring(1);
-			String withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 1);
+			String withoutBrace = fam.get(i)[7].substring(2);
+			String withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 2);
 			allChildren.add(withoutBrace2);
 		}
 		
 		for (int j = 0 ; j < fam.size(); j++) {
 			for (int k = 0; k < allChildren.size(); k++) {
-				if (allChildren.get(k).contains(fam.get(j)[3]) && allChildren.get(k).contains(fam.get(j)[5])) {
+				String dadWithoutAt = fam.get(j)[3].substring(1);
+				String dadWithoutAt2 = dadWithoutAt.substring(0, dadWithoutAt.length() - 1);
+				String momWithoutAt = fam.get(j)[5].substring(1);
+				String momWithoutAt2 = momWithoutAt.substring(0, momWithoutAt.length() - 1);
+				if (allChildren.get(k).contains(dadWithoutAt2) && allChildren.get(k).contains(momWithoutAt2)) {
 					System.out.println("ERROR: FAMILY: US18: " + fam.get(j)[0] + ": Two siblings in this family are married.");
 				}
 			}
