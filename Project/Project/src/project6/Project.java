@@ -1,4 +1,4 @@
-package project6;
+
 
 import java.io.*;
 import java.time.*;
@@ -1016,6 +1016,8 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		
 		for (int i=0; i<indi.size(); i++) {
 			String child = indi.get(i)[7];
+			child = child.replace("{", "");
+			child = child.replace("}", "");
 
 			if (child == "N/A") {
 				continue;
@@ -1024,11 +1026,11 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			String dateB = indi.get(i)[3];
 			
 			for (int j=0; j<fam.size(); j++) {
-				if (fam.get(j)[0] == child) {
+				if (child.compareTo(fam.get(j)[0]) == 0) {
 					
 					Date db = format.parse(dateB);
-					Date dad = getIndiDate(indi, fam.get(i)[3], Dates.DEATH);
-					Date mom = getIndiDate(indi, fam.get(i)[5], Dates.DEATH);
+					Date dad = getIndiDate(indi, fam.get(j)[3], Dates.DEATH);
+					Date mom = getIndiDate(indi, fam.get(j)[5], Dates.DEATH);
 
 					if (db.before(dad)) {
 						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Father death " + dad.toString() + " is before child birth date " + db.toString());
