@@ -1,4 +1,4 @@
-
+package project6;
 
 import java.io.*;
 import java.time.*;
@@ -561,92 +561,6 @@ public class Project
 			}
 		}
 	}
-	
-	/*public void resultstory8()
-	{
-		//Sets the value of variables
-		for(int i = 0; i < famDetails.size(); i++)
-		{
-			if(famDetails.get(i)[1].contains("@F"))
-				{
-					if(famDetails.get(i)[7].equals("N/A"))
-					{
-					cid[e] = "N/A";
-					}
-					else
-					{
-					String[] result0 = famDetails.get(i)[0].split("@");
-		  			fid[e] = result0[1]; //Family ID
-					mdate[e] = famDetails.get(i)[1]; //Divorce date
-					if( !cid[i].equals("N/A"))
-					{
-						String[] result1 = famDetails.get(i)[7].split("'");
-						cid[e] = result1[1]; //Children's ID
-					}
-					if(famDetails.get(i)[7].contains("N/A"))
-						System.out.println(famDetails.get(i)[7]);
-					else
-						System.out.println(famDetails.get(i)[7]);
-					e++;
-					System.out.println(i);
-					}
-				}
-			}
-		
-		for(int i = 0; i < indiDetails.size(); i++)
-		{
-			for(int j  = 0; j <indiDetails.get(i).length; j++)
-			{
-				if(indiDetails.get(i)[j].contains("@I"))
-				{
-					String[] result1 = indiDetails.get(i)[0].split("@");
-		  			iid[e1] = result1[1]; // Individual ID
-					bdate[e1] = indiDetails.get(i)[3]; // Birth date
-					e1++;
-				}
-			}
-		}
-		//Implements story 8 and prints
-		for(int i = 0; i < famDetails.size(); i++)
-		{	
-			for(int j = 0; j < indiDetails.size(); j++)
-			{
-				boolean foo = false;
-				
-					if(cid[i].compareTo(iid[j]) == 0 && !bdate[j].equals("N/A") && !mdate[i].equalsIgnoreCase("N/A") )
-					{	
-						String[] mdate1 = mdate[i].split("-");
-						String myear = mdate1[0];   String mmonth = mdate1[1];   String mday = mdate1[2];
-					
-						String[] bdate1 = bdate[j].split("-");
-						String byear = bdate1[0];   String bmonth = bdate1[1];	String bday = bdate1[2];
-					
-						if(Integer.parseInt(myear) < Integer.parseInt(byear))
-						{
-							foo = true;
-						}
-					
-						else if(Integer.parseInt(myear) == Integer.parseInt(byear))
-						{
-							if(Integer.parseInt(mmonth) < Integer.parseInt(bmonth))
-							{
-								foo = true;
-							}			 	
-							else if(Integer.parseInt(mmonth) == Integer.parseInt(bmonth))
-							{
-								if(Integer.parseInt(mday) <= Integer.parseInt(bday))
-								{
-									foo = true;
-								}	
-							}
-						}
-						if (!foo)
-							System.out.println("Error: FAMILY: US08: " + cid[i] + ": born " + bdate[j] + " before marriage's on " + mdate[i]);
-					}	
-					
-			}
-		}
-	}*/
 	
 	public void resultstory8() throws ParseException
 	{
@@ -1214,7 +1128,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		return validStatus;
 	}
 	
-	public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) {
+	/*public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) {
 		
 		for (int i = 0; i < indi.size(); i++) {
 			for (int j = 0; j < fam.size(); j++) {
@@ -1234,6 +1148,55 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			}
 			 
 		}
+	}
+	*/
+	
+	
+	public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) throws ParseException 
+	{
+		Date childbdate = new Date(), wifebdate = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		//Sets the value of variables
+		for(int i = 0; i < fam.size(); i++)
+		{
+			String iid ="",fid="",hid="", wid="", cid ="", wifeyear="", childyear="", husyear="";
+
+			if (!(fam.get(i)[1].contains("N/A")))
+			{
+				String[] result0 = fam.get(i)[0].split("@");    fid = result0[1]; //Family's ID
+				String[] result1 = fam.get(i)[3].split("@");    hid = result1[1]; //Husband's ID
+				String[] result2 = fam.get(i)[5].split("@");    wid = result2[1]; //Wife's ID
+				String[] result = fam.get(i)[7].split("'");    cid = result[1]; //child's ID
+			}
+			
+			for(int j = 0; j < indi.size(); j++)
+			{
+				String[] result = indi.get(j)[0].split("@");    iid = result[1]; //Indi's ID
+				
+				if (wid.compareTo(iid) == 0)
+				{
+					String[] result1 = indi.get(j)[3].split("-");   wifeyear = result1[0];
+				}
+				if (hid.compareTo(iid) == 0)
+				{
+					String[] result1 = indi.get(j)[3].split("-");   husyear = result1[0];
+				}
+				if(cid.compareTo(iid) == 0)
+				{
+					String[] result1 = indi.get(j)[3].split("-");   childyear = result1[0];
+				}
+			}
+			if(cid.length() <= 3 && (Integer.parseInt(childyear) - Integer.parseInt(wifeyear)) > 60)
+			{
+				System.out.println("ERROR: Family: US12: " + fid + ": Mother '"+ wid + "' is more than 60 years older '"
+						+ cid + "'.");
+			}
+			if(cid.length() <= 3 && (Integer.parseInt(childyear) - Integer.parseInt(husyear)) > 60)
+			{
+				System.out.println("ERROR: Family: US12: " + fid + ": Father '"+ hid + "' is more than 80 years older '"
+						+ cid + "'.");
+			}
+		}	
 	}
 	
 	public void multipleBirths(List<String[]> indi) {
