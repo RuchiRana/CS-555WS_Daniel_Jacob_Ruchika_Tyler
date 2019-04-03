@@ -1,0 +1,67 @@
+
+	Individuals
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	|	ID              |	Name                    |	Gender  |	Birthday        |	Age     |	Alive           |	Death           |	Child           |	Spouse          | 
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	|	    @I1@	|	    Betty /Wilson/	|	    F	|	    2020-06-22	|	    -1	|	    True	|		N/A	|	    {@F1@}	|		N/A	|
+	|	    @I2@	|	    Andrew /Wilson/	|	    M	|	    1928-06-28	|	    90	|	    False	|	    1959-02-03	|	    {@F3@}	|	    {@F2@}	|
+	|	    @I3@	|	    Lisa /Cooper/	|	    F	|	    1958-02-02	|	    61	|	    True	|		N/A	|		N/A	|	    {@F1@}	|
+	|	    @I4@	|	    Andrea /Lopez/	|	    F	|	    1964-03-14	|	    55	|	    False	|	    1980-10-09	|		N/A	|	    {@F2@}	|
+	|	    @I5@	|	    Kevin /Price/	|	    M	|	    1982-08-18	|	    36	|	    True	|		N/A	|	    {@F2@}	|		N/A	|
+	|	    @I6@	|	    Alex /Wilson/	|	    M	|	    1989-10-09	|	    29	|	    True	|		N/A	|	    {@F2@}	|		N/A	|
+	|	    @I7@	|	    Richard /Wilson/	|	    M	|	    1944-09-25	|	    74	|	    False	|	    1982-10-08	|		N/A	|	    {@F4@}	|
+	|	    @I8@	|	    Michelle /Taylor/	|	    F	|	    1944-07-01	|	    74	|	    False	|	    1963-12-20	|		N/A	|	    {@F3@}	|
+	|	    @I9@	|	    George /Wilson/	|	    M	|	    1962-02-04	|	    57	|	    True	|		N/A	|	    {@F3@}	|		N/A	|
+	|	    @I10@	|	    Julia /Wilson/	|	    F	|	    1964-06-28	|	    54	|	    True	|		N/A	|	    {@F3@}	|		N/A	|
+	|	    @I11@	|	    Rachel /Smith/	|	    F	|	    1942-05-15	|	    76	|	    False	|	    1964-08-14	|		N/A	|	    {@F4@}	|
+	|	    @I12@	|	    Jane /Wilson/	|	    F	|	    1963-08-22	|	    55	|	    False	|	    1981-10-02	|	    {@F4@}	|	    {@F5@}	|
+	|	    @I13@	|	    Matthew /Jones/	|	    M	|	    1962-12-21	|	    56	|	    False	|	    1982-08-14	|		N/A	|	    {@F5@}	|
+	|	    @I14@	|	    Laura /Jones/	|	    F	|	    1993-06-28	|	    25	|	    True	|		N/A	|	    {@F5@}	|	    {@F6@}	|
+	|	    @I15@	|	    Laura /Jones/	|	    F	|	    1993-06-28	|	    25	|	    True	|		N/A	|	    {@F5@}	|	    {@F7@}	|
+	|	    @I16@	|	    Timmy /Smith/	|	    M	|	    1942-05-15	|	    76	|	    True	|		N/A	|		N/A	|	    {@F7@}	|
+	|	    @I17@	|	    David /Alvarez/	|	    M	|	    1942-05-15	|	    76	|	    True	|		N/A	|		N/A	|	    {@F6@}	|
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Families
+	----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	|	ID              |	Married         |   Divorced            |    Husband ID         |	Husband Name            |    Wife Id            |	Wife Name               |   Children            | 
+	----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	|	    @F1@	|	    1810-03-03	|		N/A	|	    @I2@	|	    Andrew /Wilson/	|	    @I3@	|	    Lisa /Cooper/	|	    {'I1'}	|
+	|	    @F2@	|	    1900-03-03	|		N/A	|	    @I2@	|	    Andrew /Wilson/	|	    @I4@	|	    Andrea /Lopez/	|	    {'I5,I6'}	|
+	|	    @F3@	|	    2020-12-23	|		N/A	|	    @I7@	|	    Richard /Wilson/	|	    @I8@	|	    Michelle /Taylor/	|	    {'I2,I9,I10'}	|
+	|	    @F4@	|	    1962-04-20	|	    1963-10-14	|	    @I7@	|	    Richard /Wilson/	|	    @I11@	|	    Rachel /Smith/	|	    {'I12'}	|
+	|	    @F5@	|	    1991-11-01	|	    1982-08-24	|	    @I13@	|	    Matthew /Jones/	|	    @I12@	|	    Jane /Wilson/	|	    {'I14,I15'}	|
+	----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ERROR: INDIVIDUAL: US01: @I1@: Birthday 2020-06-22 occurrs in the future.
+ERROR: FAMILY: US01: @F3@: Marriage date 2020-12-23 occurrs in the future.
+ERROR: FAMILY: US02: @F1@: Husband birthdate 1928-06-28 is after marriage date 1810-03-03
+ERROR: FAMILY: US02: @F1@: Wife birthdate 1958-02-02 is after marriage date 1810-03-03
+ERROR: FAMILY: US02: @F2@: Husband birthdate 1928-06-28 is after marriage date 1900-03-03
+ERROR: FAMILY: US02: @F2@: Wife birthdate 1964-03-14 is after marriage date 1900-03-03
+ERROR: FAMILY: US04: @F5@: Divorced 1982-08-24 before married 1991-11-01
+Error: FAMILY: US05: F3: Married 2020-12-23 after husband's (I7) death on 1982-10-08
+Error: FAMILY: US05: F3: Married 2020-12-23 after wife's (I8) death on 1963-12-20
+Error: FAMILY: US05: F5: Married 1991-11-01 after wife's (I12) death on 1981-10-02
+Error: FAMILY: US05: F5: Married 1991-11-01 after husband's (I13) death on 1982-08-14
+Error: FAMILY: US06: F5: Divorced 1982-08-24 after wife's (I12) death on 1981-10-02
+Error: FAMILY: US06: F5: Divorced 1982-08-24 after husband's (I13) death on 1982-08-14
+ERROR: INDIVIDUAL US07: @I1@ Current Date: 2019-04-03 is before the Birth Date 2020-06-22
+Error: FAMILY: US08: I2: born 1928-06-28 before marriage's on 2020-12-23
+Error: FAMILY: US08: I9: born 1962-02-04 before marriage's on 2020-12-23
+Error: FAMILY: US08: I10: born 1964-06-28 before marriage's on 2020-12-23
+ERROR: INDIVIDUAL: US09: @I2@: Father death Fri Oct 08 00:00:00 EDT 1982 is before child birth date Thu Jun 28 00:00:00 EDT 1928
+ERROR: INDIVIDUAL: US09: @I5@: Mother death Thu Oct 09 00:00:00 EDT 1980 is before birth date date Wed Aug 18 00:00:00 EDT 1982
+ERROR: INDIVIDUAL: US09: @I6@: Mother death Thu Oct 09 00:00:00 EDT 1980 is before birth date date Mon Oct 09 00:00:00 EDT 1989
+ERROR: INDIVIDUAL: US09: @I9@: Father death Fri Oct 08 00:00:00 EDT 1982 is before child birth date Sun Feb 04 00:00:00 EST 1962
+ERROR: INDIVIDUAL: US09: @I10@: Father death Fri Oct 08 00:00:00 EDT 1982 is before child birth date Sun Jun 28 00:00:00 EDT 1964
+ERROR: INDIVIDUAL: US09: @I10@: Mother death Fri Dec 20 00:00:00 EST 1963 is before birth date date Sun Jun 28 00:00:00 EDT 1964
+ERROR: INDIVIDUAL: US09: @I12@: Father death Fri Oct 08 00:00:00 EDT 1982 is before child birth date Thu Aug 22 00:00:00 EDT 1963
+ERROR: INDIVIDUAL: US09: @I14@: Mother death Fri Oct 02 00:00:00 EDT 1981 is before birth date date Mon Jun 28 00:00:00 EDT 1993
+ERROR: INDIVIDUAL: US09: @I15@: Mother death Fri Oct 02 00:00:00 EDT 1981 is before birth date date Mon Jun 28 00:00:00 EDT 1993
+ERROR: FAMILY: US10: @F1@: Husband birthdate Thu Jun 28 00:00:00 EDT 1928 is less than 14 years before marriage date Sat Mar 03 00:00:00 EST 1810
+ERROR: FAMILY: US10: @F1@: Wife birthdate Sun Feb 02 00:00:00 EST 1958 is less than 14 years before marriage date Sat Mar 03 00:00:00 EST 1810
+ERROR: FAMILY: US10: @F2@: Husband birthdate Thu Jun 28 00:00:00 EDT 1928 is less than 14 years before marriage date Sat Mar 03 00:00:00 EST 1900
+ERROR: FAMILY: US10: @F2@: Wife birthdate Sat Mar 14 00:00:00 EST 1964 is less than 14 years before marriage date Sat Mar 03 00:00:00 EST 1900
+Error: FAMILY: US11: F1 : (I2) married to (I4) and (I3) simultaneously.
+ERROR: Family: US12: F1: Mother 'I3' is more than 60 years older 'I1'.
+ERROR: Family: US12: F1: Father 'I2' is more than 80 years older 'I1'.
+Error: FAMILY: US16: F2: Male members of the family does not have the same last name. Father's (I2) last name: Wilson and Son's (I5) last name: Price
