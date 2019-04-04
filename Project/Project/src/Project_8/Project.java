@@ -1200,11 +1200,11 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				if (indi.get(i)[7] != "N/A" && indi.get(i)[7] == fam.get(j)[0]) {
 					if (fam.get(j)[3] != "N/A" && fam.get(j)[5] != "N/A") {
 						for (int k = 0; k < indi.size(); k++) {
-							if (indi.get(k)[0] == fam.get(j)[3] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 80) {
+							if (indi.get(k)[0].compareTo(fam.get(j)[3]) == 0 && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 80) {
 								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Father of this individual is more than 80 years older than him/her.");
 							}
 							
-							if (indi.get(k)[0] == fam.get(j)[5] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 60) {
+							if (indi.get(k)[0].compareTo(fam.get(j)[5]) == 0 && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 60) {
 								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Mother of this individual is more than 60 years older than him/her.");
 
 							}
@@ -1223,13 +1223,13 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			int counter = 1;
 			
 			for (int j = i + 1; j < indi.size(); j++) {
-				if (indi.get(i)[7] == indi.get(j)[7] && indi.get(i)[3] == indi.get(j)[3]) {
+				if (indi.get(i)[7].compareTo(indi.get(j)[7]) == 0 && indi.get(i)[3].compareTo(indi.get(j)[3]) == 0) {
 					counter++;
 				}
 			}
 			
 			if (counter > 5) {
-				System.out.println("ERROR: FAMILY: US14: " + indi.get(i)[7] + ": Family has more than 5 children with the same birthday.");
+				System.out.println("ERROR: INDIVIDUAL: US14: " + indi.get(i)[7] + ": Individual has more than 4 other siblings with the same birthday.");
 			}
 		}
 	}
@@ -1432,10 +1432,10 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				for (int k = 0; k < indi.size(); k++) {
 					String withoutAt = indi.get(k)[0].substring(1);
 					String withoutAt2 = withoutAt.substring(0, withoutAt.length() - 1);
-					if (withoutAt2 == children[j]) {
-						if (indi.get(k)[0] == fam.get(i)[3]) {
+					if (withoutAt2.compareTo(children[j]) == 0) {
+						if (indi.get(k)[0].compareTo(fam.get(i)[3]) == 0) {
 							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Mom married the kid.");
-						} else if (indi.get(k)[0] == fam.get(i)[5]) {
+						} else if (indi.get(k)[0].compareTo(fam.get(i)[5]) == 0) {
 							System.out.println("ERROR: FAMILY: US17: " + fam.get(i)[0] + ": Dad married the kid.");
 						}
 					}
