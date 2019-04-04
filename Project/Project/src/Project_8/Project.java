@@ -290,7 +290,6 @@ public class Project
 				String[] dataArr = getFormattedDate(data);	
 				checkDates(dataArr);
 				saveFam[1] = dataArr[4];
-				famDetails.add(saveFam);
 			}
 			else if(famPrevTag.equals("DIV"))
 			{
@@ -298,6 +297,10 @@ public class Project
 				checkDates(dataArr);
 				saveFam[2] = dataArr[4];
 			}
+		}
+		if(tag.equals("_CURRENT"))
+		{
+			famDetails.add(saveFam);
 		}
 		
 		famPrevTag = tag;
@@ -1072,34 +1075,58 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		//Find the first Spilt
 		int comma = childString.indexOf(",");
 		
-		//Get the first Child
-		String childOne = childString.substring(comma - 2, comma);
-		children.add(childOne);
-		
-		//Set up the rest of the string minus the first child
-		rest = childString.substring(comma + 1);
-		
-		//Find the next comma & the end
-		int nextComma = rest.indexOf(",");
-		int end = rest.indexOf("'}");
-		
-		while(rest.length() > 2)
-		{		
-			if(nextComma == -1)
+		if(!childString.equals("N/A"))
+		{
+			if(comma > -1)
 			{
-				childTwo = rest.substring(0, end);
-				rest = rest.substring(rest.indexOf(childTwo) + childTwo.length());
-				children.add(childTwo);
+				//Get the first Child
+				String childOne = childString.substring(childString.indexOf("'") + 1, comma);
+				//System.out.println("CHILD ONE: " + childOne);
+				children.add(childOne);
+				
+				//Set up the rest of the string minus the first child
+				rest = childString.substring(comma + 1);
+				
+				
+				//Find the next comma & the end
+				int nextComma = rest.indexOf(",");
+				int end = rest.indexOf("'}");
+				
+	
+					while(rest.length() > 2)
+					{		
+						//System.out.println("REST: " + rest);
+						//System.out.println("nextCOMMA: " + nextComma);
+						if(nextComma < 0)
+						{
+							childTwo = rest.substring(0, end);
+						//	System.out.println("CHILD TWO: " + childTwo);
+							rest = rest.substring(rest.indexOf(childTwo) + childTwo.length());
+						//	System.out.println("REST now is: " + rest);
+							children.add(childTwo);
+						}
+						else
+						{
+							childTwo = rest.substring(0, nextComma);
+							children.add(childTwo);
+							rest = rest.substring(nextComma + 1);
+						}
+						
+						nextComma = rest.indexOf(",");
+						end = rest.indexOf("'}");
+					}
+				
 			}
-			else
+			else if(childString != "")
 			{
-				childTwo = rest.substring(0, nextComma);
-				children.add(childTwo);
-				rest = rest.substring(nextComma + 1);
+				rest = childString.substring(childString.indexOf("'")+1);
+				//System.out.println("REST IS IN ELSE: " + rest);
+				//System.out.println("Child String: " + childString);
+				childString = rest.substring(0,rest.indexOf("'") );
+				//System.out.println("Child String NOW: " + childString);
+				
+				children.add(childString);
 			}
-			
-			nextComma = rest.indexOf(",");
-			end = rest.indexOf("'}");
 		}
 		
 		return children;		
@@ -1249,6 +1276,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			//Find where the day number ends
 			int daySplitIndex = data.indexOf(" ");
 			String day = data.substring(0,daySplitIndex);
+	
+			if(day.length() == 1)
+			{
+				day = "0" + day;
+			}
+			
 			rtn[1] = day;
 					
 			//Get Month
@@ -1327,6 +1360,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				//Check Day length
 				if(data[1].length() != 2)
 				{
+				
 					pass = false;
 					System.out.println("ERROR IN REFACTORED CODE FOR DATES: " + data[1].length() + " DAY IS GREATER THAN THE EXPECTED VALUE OF 2");
 					//Check Day Validity
@@ -1406,7 +1440,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		//return true;
 	}
 
-	public void checkUS(List<String[]> fam) throws ParseException{
+	/*public void checkUS(List<String[]> fam) throws ParseException{
 		for (int i=0; i<fam.size(); i++) {
 			String dad = fam.get(i)[3];
 			String mom = fam.get(i)[5];
@@ -1420,7 +1454,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			}
 		}
 		//return true;
-	}
+	}*/
 	
 	public void noMarriagesToChildren(List<String[]> indi, List<String[]> fam) {
 		
@@ -1463,6 +1497,293 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				}
 			}
 		}
+	}
+	
+	public void checkUS(List<String[]> fam) throws ParseException{
+		for (int i=0; i<fam.size(); i++) {
+			String dad = fam.get(i)[3];
+			String mom = fam.get(i)[5];
+			String mDate = fam.get(i)[1];
+
+			for (int j=i+1; j<fam.size(); j++) {
+				if (dad == fam.get(j)[3] && mom == fam.get(j)[5] && mDate == fam.get(j)[1]) {
+					System.out.println("ERROR: INDIVIDUAL: US24: " + fam.get(i)[0] + ": Family has duplicate: " + fam.get(j)[0]);
+					//return false;
+				}
+			}
+		}
+		//return true;
+	}
+	
+	//Takes in a child ID and finds their parents
+	public String[] parents(String child, List<String[]> fam)
+	{
+		String[] parent = {"", ""};
+		List<String> children;
+		String parent0 = "";
+		String parent1 = "";
+		
+		for(int i = 0; i < fam.size(); i++)
+		{
+			
+			parent0 = fam.get(i)[3];
+			parent1 = fam.get(i)[5];
+			
+			//Get the children for this family.
+
+			children = getFamChildren(fam, i);
+
+			//Go through the found children and see if we are in the right family;
+			for(int j = 0; j < children.size(); j++)
+			{				
+					
+				if(child.equals("@" + children.get(j) + "@"))
+				{
+					//The parents are here
+					
+					parent[0] = parent0;
+					parent[1] = parent1;
+					
+					return parent;
+				}
+			}
+		}
+		
+		return parent;
+	}
+	
+	public void printArray(String[] arr)
+	{
+		for(int i = 0; i < arr.length; i++)
+		{
+			System.out.print("[" + arr[i] + "] ");
+		}
+	}
+	public Boolean nonEmpty(String[] arr)
+	{
+		int count = 0;
+		for(int i = 0; i < arr.length; i++)
+		{
+			if(arr[i].equals(""))
+			{
+				count ++;
+			}
+		}		
+		
+		if(count >= arr.length)
+		{
+			return false;
+		}
+		return true;
+		
+	}
+	
+	//Takes in the grandparents of 2 people and see if they are the same
+	public Boolean checkGrandparents(String[] husGP, String[] wifeGP, String hus, String wife)
+	{
+		
+		if(nonEmpty(husGP) && nonEmpty(wifeGP))
+		{
+			//Check side 1
+			if(husGP[0].equals(wifeGP[0]) && husGP[1].equals(wifeGP[1]))
+			{
+				System.out.println("ERROR IN US19 FIRST COUSINS: " + hus + " and " + wife + " SHOULD NOT MARRY");
+				return true;
+			}
+			//Check side 1 b
+			if(husGP[0].equals(wifeGP[2]) && husGP[1].equals(wifeGP[3]))
+			{
+				System.out.println("ERROR IN US19 FIRST COUSINS: " + hus + " and " + wife + " SHOULD NOT MARRY");
+				return true;
+			}
+			//Check side 2
+			if(husGP[2].equals(wifeGP[0]) && husGP[3].equals(wifeGP[1]))
+			{
+				System.out.println("ERROR IN US19 FIRST COUSINS: " + hus + " and " + wife + " SHOULD NOT MARRY");
+				return true;
+			}
+			if(husGP[2].equals(wifeGP[2]) && husGP[3].equals(wifeGP[3]))
+			{
+				System.out.println("ERROR IN US19 FIRST COUSINS: " + hus + " and " + wife + " SHOULD NOT MARRY");
+				return true;
+			}
+		}
+		
+		return false; 
+	}
+	
+	
+	public Boolean firstCousin(List<String[]> indi, List<String[]> fam)
+	{
+		Boolean valid = false;
+		//Loop thru families
+		for(int i = 0; i < fam.size(); i++)
+		{
+			//For each entry check if they are actively married
+			if(!fam.get(i)[1].equals("N/A"))
+			{
+				
+				String husID = fam.get(i)[3];
+				String wifeID = fam.get(i)[5];
+				
+				
+				String[] husParent = parents(husID, fam);
+				String[] wifeParent = parents(wifeID, fam);
+					
+					
+				String[] husGPpt1 = parents(husParent[0], fam);
+
+				String[] husGPpt2 = parents(husParent[1], fam);
+					
+				String[] wifeGPpt1 = parents(wifeParent[0], fam);
+				String[] wifeGPpt2 = parents(wifeParent[1], fam);
+					
+				String[] husGP = {husGPpt1[0], husGPpt1[1], husGPpt2[0], husGPpt2[1]};
+				String[] wifeGP = {wifeGPpt1[0], wifeGPpt1[1], wifeGPpt2[0], wifeGPpt2[1]};
+
+					
+				if(valid = checkGrandparents(husGP, wifeGP, husID, wifeID))
+				{
+					return valid;
+				}
+			}
+				
+		}
+		
+		return valid;
+	}
+	
+	public List<String> siblings(String[] parents,  List<String[]> fam)
+	{
+		List<String> sibs = new ArrayList<String>();
+		
+		for(int i = 0; i < fam.size(); i++)
+		{
+			if(fam.get(i)[3].equals(parents[0]))
+			{
+				//Found the parents
+				sibs = getFamChildren(fam,i);
+			}
+			
+		}
+		
+		
+		return sibs;
+	}
+	
+	public List<String> combineLists(List<String> main, List<String> second)
+	{
+		for(int i = 0; i < second.size(); i++)
+		{
+			if(main.contains(second.get(i)) == false)
+			{
+				main.add(second.get(i));
+			}
+		}
+		
+		return main;
+	}
+	
+	public List<String> sibsChildren(List<String> sibs, List<String[]> fam)
+	{
+		List<String> sibsChil = new ArrayList<String>();
+	//	System.out.println("SIBS: " + sibs);
+		
+		for(int i = 0; i < fam.size(); i++)
+		{
+			for(int j = 0; j < sibs.size(); j++)
+			{
+				String idp1 = fam.get(i)[3].substring(1);
+				String id = idp1.substring(0,idp1.indexOf("@"));
+				
+				
+				String idp2 = fam.get(i)[5].substring(1);
+				String id2 = idp2.substring(0,idp2.indexOf("@"));
+				
+				if(sibs.get(j).equals(id) || sibs.get(j).equals(id2))
+				{
+					List<String> temp = getFamChildren(fam,i);
+					combineLists(sibsChil,temp);
+				}
+			}
+		}
+		
+		return sibsChil;
+	}
+	
+	public Boolean checkAuntUncleMarriageNieceNephew(List<String> sibChildren, String id)
+	{
+		for(int i = 0; i < sibChildren.size(); i++)
+		{
+			if(id.equals("@" + sibChildren.get(i) + "@"))
+			{
+				return true;
+			}
+		}	
+		
+		return false;
+	}
+	
+	public Boolean auntsAndUncles(List<String[]> indi, List<String[]> fam)
+	{
+		//Loop thru families
+		
+				for(int i = 0; i < fam.size(); i++)
+				{
+					//For each entry check if they are actively married
+					if(!fam.get(i)[1].equals("N/A"))
+					{
+						//If we are here, they are married. We must check if they are Aun.t/Uncle and Niece/Nephew.
+						//Aunt: get wifes parents.
+						/*String husIDp1 =  fam.get(i)[3].substring(1);
+						String husID = husIDp1.substring(1, husIDp1.indexOf("@"));
+				
+						String wifeIDp1 = fam.get(i)[5].substring(1);
+						String wifeID = wifeIDp1.substring(1, wifeIDp1.indexOf("@"));*/
+						
+						String husID = fam.get(i)[3];
+						String wifeID = fam.get(i)[5];
+						
+						//System.out.println("WIFE ID: " + wifeID);
+				
+						
+						String[] wifeParent = parents(wifeID, fam);
+						
+						//System.out.println("WIFEPARENT: ");
+						//printArray(wifeParent);
+								
+						
+						//Next check the wifes parents kids to find the wife's siblings
+						List<String> wifeSibs = siblings(wifeParent, fam);
+						//System.out.println("\nwifeSIBS: " + wifeSibs);
+						
+						//Next find their children to find the niece, nephews.
+						List<String> wifSibsChildren = sibsChildren(wifeSibs, fam);
+						//System.out.println("wifSibsChildren: " + wifSibsChildren);
+						
+						
+						if(checkAuntUncleMarriageNieceNephew(wifSibsChildren, husID))
+						{
+							System.out.println("ERROR IN US20 AUNT: " + wifeID + " SHOULD NOT MARRY THEIR NIECE/NEWPHEW : " + husID);
+							return true;
+						}
+						
+						//Uncle
+						String[] husParent = parents(husID, fam);
+						
+						List<String> husSibs = siblings(husParent, fam);
+						List<String> husSibsChildren = sibsChildren(husSibs, fam);
+						
+						if(checkAuntUncleMarriageNieceNephew(husSibsChildren, wifeID))
+						{
+							System.out.println("ERROR IN US20 UNCLE: " + husID + " SHOULD NOT MARRY THEIR NIECE/NEWPHEW: " + wifeID);
+							return true;
+						}
+						
+					}
+				}
+				
+				return false;
 	}
 	
 	public void run() throws IOException, ParseException
@@ -1642,7 +1963,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			checkDBB(indiDetails);
 	    	
 	    	//story8
-	    	resultstory8();
+	    	//resultstory8();
 
 	    	//story9
 	    	checkBBDP(indiDetails, famDetails);
@@ -1657,7 +1978,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			checkSibCount(famDetails);
 
 	    	//story 11
-			No_bigamy();
+			//No_bigamy();
 	    	
 	    	//story 16
 	    	MaleLastNames();
@@ -1680,6 +2001,13 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 	    	// story 18
 	    	siblingShouldNotMarry(indiDetails, famDetails);
 	    	
+	    	//story 19
+	    	firstCousin(indiDetails, famDetails);
+	    	
+	    	//story 20
+
+	    	auntsAndUncles(indiDetails, famDetails);
+   	
 	    	//Story 22
 			UniqueIDs();
 			
