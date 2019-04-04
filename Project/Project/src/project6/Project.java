@@ -1206,13 +1206,15 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			int counter = 1;
 			
 			for (int j = i + 1; j < indi.size(); j++) {
-				if (indi.get(i)[7] == indi.get(j)[7] && indi.get(i)[3] == indi.get(j)[3]) {
+				if (indi.get(i)[7].compareTo(indi.get(j)[7]) == 0 && indi.get(i)[3].compareTo(indi.get(j)[3]) == 0) {
 					counter++;
 				}
 			}
 			
+			System.out.println(counter);
+			
 			if (counter > 5) {
-				System.out.println("ERROR: FAMILY: US14: " + indi.get(i)[7] + ": Family has more than 5 children with the same birthday.");
+				System.out.println("ERROR: INDIVIDUAL: US14: " + indi.get(i)[7] + ": Individual has more than 4 other siblings with the same birthday.");
 			}
 		}
 	}
