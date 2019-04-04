@@ -573,7 +573,10 @@ public class Project
 			if (!(famDetails.get(i)[1].contains("N/A")))
 			{
 				marriage = format.parse(famDetails.get(i)[1]);
-				String[] result0 = famDetails.get(i)[7].split("'");    cid = result0[1]; //Child's ID
+				if(famDetails.get(i)[7].compareTo("N/A") != 0)
+				{	
+					String[] result0 = famDetails.get(i)[7].split("'");    cid = result0[1]; //Child's ID
+				}
 				String[] result1 = famDetails.get(i)[0].split("@");    fid = result1[1]; //Family's ID
 			}
   			for(int j = 0; j < indiDetails.size(); j++)
@@ -1128,30 +1131,6 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		return validStatus;
 	}
 	
-	/*public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) {
-		
-		for (int i = 0; i < indi.size(); i++) {
-			for (int j = 0; j < fam.size(); j++) {
-				if (indi.get(i)[7] != "N/A" && indi.get(i)[7] == fam.get(j)[0]) {
-					if (fam.get(j)[3] != "N/A" && fam.get(j)[5] != "N/A") {
-						for (int k = 0; k < indi.size(); k++) {
-							if (indi.get(k)[0] == fam.get(j)[3] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 80) {
-								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Father of this individual is more than 80 years older than him/her.");
-							}
-							if (indi.get(k)[0] == fam.get(j)[5] && (Integer.parseInt(indi.get(k)[4]) - Integer.parseInt(indi.get(i)[4])) >= 60) {
-								System.out.println("ERROR: INDIVIDUAL: US12: " + indi.get(i)[0] + ": Mother of this individual is more than 60 years older than him/her.");
-
-							}
-						}
-					}
-				}
-			}
-			 
-		}
-	}
-	*/
-	
-	
 	public void parentsNotTooOld(List<String[]> indi, List<String[]> fam) throws ParseException 
 	{
 		Date childbdate = new Date(), wifebdate = new Date();
@@ -1166,7 +1145,10 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				String[] result0 = fam.get(i)[0].split("@");    fid = result0[1]; //Family's ID
 				String[] result1 = fam.get(i)[3].split("@");    hid = result1[1]; //Husband's ID
 				String[] result2 = fam.get(i)[5].split("@");    wid = result2[1]; //Wife's ID
-				String[] result = fam.get(i)[7].split("'");    cid = result[1]; //child's ID
+				if(fam.get(i)[7].compareTo("N/A") != 0)
+				{
+					String[] result = fam.get(i)[7].split("'");    cid = result[1]; //child's ID
+				}
 			}
 			
 			for(int j = 0; j < indi.size(); j++)
@@ -1186,6 +1168,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 					String[] result1 = indi.get(j)[3].split("-");   childyear = result1[0];
 				}
 			}
+			if(!childyear.isEmpty() && !wifeyear.isEmpty()) {
 			if(cid.length() <= 3 && (Integer.parseInt(childyear) - Integer.parseInt(wifeyear)) > 60)
 			{
 				System.out.println("ERROR: Family: US12: " + fid + ": Mother '"+ wid + "' is more than 60 years older '"
@@ -1197,6 +1180,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 						+ cid + "'.");
 			}
 		}	
+		}
 	}
 	
 	public void multipleBirths(List<String[]> indi) {
@@ -1210,8 +1194,6 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 					counter++;
 				}
 			}
-			
-			System.out.println(counter);
 			
 			if (counter > 5) {
 				System.out.println("ERROR: INDIVIDUAL: US14: " + indi.get(i)[7] + ": Individual has more than 4 other siblings with the same birthday.");
