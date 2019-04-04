@@ -9,7 +9,7 @@ public class Driver
 {
 	public static void main(String[] args) throws IOException, ParseException
 	{
-		Project project06 = new Project("../../resources/tags.txt","../../resources/testFile.ged");
+		Project project06 = new Project("Project/Project/resources/tags.txt","Project/Project/resources/testFile.ged");
 		
 		project06.run();
 	}

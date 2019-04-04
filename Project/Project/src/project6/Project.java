@@ -1051,16 +1051,26 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				return rtnDate;
 			}
 		}
-		return null;
+		return rtnDate;
 	}
 	
 	public boolean checkValidSibilingBirthDates(ArrayList<String> children, List<String[]> indi, List<String[]> fam)
 	{
 		for(int i = 1; i < children.size(); i++)
-		{
+		{	
 			//Get previous child
 			String prevC = children.get(i - 1);
 			String currC = children.get(i);
+			
+			if(prevC.indexOf("I") < 0)
+			{
+				prevC = "I" + prevC;
+			}
+			
+			if(currC.indexOf("I") < 0)
+			{
+				currC = "I" + currC;
+			}
 			
 			String prevBirthDate = getChildBirthDate(prevC,indi, fam);
 			String curBrithDate = getChildBirthDate(currC, indi, fam);
@@ -1212,6 +1222,10 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			//Find where the day number ends
 			int daySplitIndex = data.indexOf(" ");
 			String day = data.substring(0,daySplitIndex);
+			if(day.length() == 1)
+			{
+				day = "0" + day;
+			}
 			rtn[1] = day;
 					
 			//Get Month
@@ -1577,7 +1591,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			parentsNotTooOld(indiDetails,famDetails);
 			
 			//Story 13
-			//checkSS(indiDetails,famDetails);
+			checkSS(indiDetails,famDetails);
 			
 			//Story 14
 			multipleBirths(indiDetails);
