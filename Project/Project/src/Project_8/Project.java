@@ -1967,7 +1967,7 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			checkDBB(indiDetails);
 	    	
 	    	//story8
-	    	//resultstory8();
+	    	resultstory8();
 
 	    	//story9
 	    	checkBBDP(indiDetails, famDetails);

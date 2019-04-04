@@ -40,11 +40,8 @@
 2 _MARNM Wilson
 1 SEX F
 1 BIRT
-<<<<<<< HEAD
 2 DATE 2 FEB 1967
-=======
 2 DATE 02 FEB 1958
->>>>>>> branch 'master' of https://github.com/RuchiRana/CS-555WS_Daniel_Jacob_Ruchika_Tyler.git
 1 FAMS @F1@
 0 @I4@ INDI
 1 NAME Andrea /Lopez/
@@ -127,11 +124,8 @@
 2 DATE 15 MAY 1942
 1 DEAT Y
 2 DATE 14 AUG 1964
-<<<<<<< HEAD
 1 FAMS @F6@
-=======
 1 FAMS @F4@
->>>>>>> branch 'master' of https://github.com/RuchiRana/CS-555WS_Daniel_Jacob_Ruchika_Tyler.git
 0 @I12@ INDI
 1 NAME Jane /Wilson/
 2 GIVN Jane
@@ -378,11 +372,8 @@
 1 CHIL @I5@
 1 CHIL @I6@
 1 MARR
-<<<<<<< HEAD
 2 DATE 3 MAR 1900
-=======
 2 DATE 03 MAR 1900
->>>>>>> branch 'master' of https://github.com/RuchiRana/CS-555WS_Daniel_Jacob_Ruchika_Tyler.git
 1 EVEN
 2 TYPE Ending
 1 _CURRENT N
@@ -439,7 +430,6 @@
 1 DIV
 2 DATE 24 AUG 1982
 1 _CURRENT Y
-<<<<<<< HEAD
 0 @F8@ FAM
 1 HUSB @I19@
 1 WIFE @I21@
@@ -452,6 +442,4 @@
 1 MARR
 2 DATE 14 JAN 2019
 1 _CURRENT Y
-=======
->>>>>>> branch 'master' of https://github.com/RuchiRana/CS-555WS_Daniel_Jacob_Ruchika_Tyler.git
 0 TRLR
