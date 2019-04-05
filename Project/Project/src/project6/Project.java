@@ -950,11 +950,11 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 					Date mom = getIndiDate(indi, fam.get(j)[5], Dates.DEATH);
 
 					if (db.before(dad) && !dad.equals(new Date(Long.MAX_VALUE))) {
-						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Father death " + dad.toString() + " is before child birth date " + db.toString());
+						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Father death " + format.format(dad) + " is before child birth date " + format.format(db));
 					}
 
 					if (db.after(mom) && !mom.equals(new Date(Long.MAX_VALUE))) {
-						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Mother death " + mom.toString() + " is before birth date date " + db.toString());
+						System.out.println("ERROR: INDIVIDUAL: US09: " + indi.get(i)[0] + ": Mother death " + format.format(mom) + " is before birth date date " + format.format(db));
 					}
 				}
 			}
@@ -985,11 +985,11 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			int wYear = c.get(Calendar.YEAR);
 
 			if (mYear - hYear < 14) {
-				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Husband birthdate " + husb.toString() + " is less than 14 years before marriage date " + dm.toString());
+				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Husband birthdate " + format.format(husb) + " is less than 14 years before marriage date " + format.format(dm));
 			}
 
 			if (mYear - wYear < 14) {
-				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Wife birthdate " + wife.toString() + " is less than 14 years before marriage date " + dm.toString());
+				System.out.println("ERROR: FAMILY: US10: " + fam.get(i)[0] + ": Wife birthdate " + format.format(wife) + " is less than 14 years before marriage date " + format.format(dm));
 			}
 		}
 	}
