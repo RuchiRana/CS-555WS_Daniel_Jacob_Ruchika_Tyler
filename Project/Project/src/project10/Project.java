@@ -1629,8 +1629,8 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 					for (int k=0; k < indi.size(); k++) {
 						if (indi.get(k)[0].compareTo(children[j]) == 0) {
 							temp = true;
-							if (indi.get(k)[7].compareTo(fam.get(i)[0]) != 0) {
-								System.out.println("ERROR: INDIVIDUAL: US26: " + indi.get(k)[0] + ": Family id " + indi.get(k)[7] + " doesn't match " + fam.get(i)[0]);
+							if (indi.get(k)[7].replace("{", "").replace("}", "").compareTo(fam.get(i)[0]) != 0) {
+								System.out.println("ERROR: INDIVIDUAL: US26: " + indi.get(k)[0] + ": Family id " + indi.get(k)[7].replace("{", "").replace("}", "") + " doesn't match " + fam.get(i)[0]);
 								//return false;
 							}
 						}
@@ -1644,36 +1644,31 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			}
 		}
 
-		boolean inside = false;
-
 		for (int i=0; i < indi.size(); i++) {
-			if (indi.get(i)[7].compareTo("N/A") !=0) {
+			temp = false;
+			if (indi.get(i)[7].replace("{", "").replace("}", "").compareTo("N/A") !=0) {
 				for (int j=0; j < fam.size(); j++) {
-					temp = false;
-					inside = false;
 
-					if (fam.get(j)[0].compareTo(indi.get(i)[7]) == 0) {
-						temp = true;
+					if (fam.get(j)[0].compareTo(indi.get(i)[7].replace("{", "").replace("}", "")) == 0) {
 
 						if (fam.get(j)[7].compareTo("N/A") == 0) {
 							System.out.println("ERROR: FAMILY: US26: " + fam.get(j)[0] + ": Child " + indi.get(i)[0] + " doesn't have existing parents");
 							//return false;
-							continue;
+							break;
 						}
 
 						String[] children = listifySet(fam.get(j)[7]);
 
 						for (int k=0; k < children.length; k++) {
 							if (children[k].compareTo(indi.get(i)[0]) == 0) {
-								inside = true;
+								temp = true;
 							}
 						}
 					}
-
-					if (!temp || !inside) {
-						System.out.println("ERROR: FAMILY: US26: " + fam.get(j)[0] + ": Child " + indi.get(i)[0] + " doesn't have matching parents");
-						//return false;
-					}
+				}
+				if (!temp) {
+					System.out.println("ERROR: INDIVIDUAL: US26: " + indi.get(i)[0] + ": Doesn't have matching parents");
+					//return false;
 				}
 			}
 		}
