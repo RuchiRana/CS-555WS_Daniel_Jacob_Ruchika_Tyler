@@ -1,4 +1,3 @@
-package project10;
 
 import java.io.*;
 import java.time.*;
@@ -1939,6 +1938,46 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 				return false;
 	}
 	
+	public void orderSiblingsByAge(List<String[]> indi, List<String[]> fam) {
+		
+		String[] children;
+		
+		
+		for (int i = 0; i < fam.size(); i++) {
+			ArrayList<Integer> ages = new ArrayList<Integer>();
+			if (fam.get(i)[7].compareTo("N/A") == 0) {
+				System.out.println("US28: Siblings by age " + fam.get(i)[0] + ": ");
+				continue;
+			}
+			String withoutBrace = fam.get(i)[7].substring(2);
+			String withoutBrace2 = withoutBrace.substring(0, withoutBrace.length() - 2);
+			children = withoutBrace2.split(",");
+			for (int j = 0; j < children.length; j++) {
+				for (int k = 0; k < indi.size(); k++) {
+					
+					String withoutAt = indi.get(k)[0].substring(1);
+					String withoutAt2 = withoutAt.substring(0, withoutAt.length() - 1);
+					if (withoutAt2.compareTo(children[j]) == 0) {
+						ages.add(Integer.parseInt(indi.get(k)[4]));
+					}
+				}
+			}
+			
+			Collections.sort(ages);
+			System.out.println("US28: Siblings by age " + fam.get(i)[0] + ": " + ages.toString());
+			
+		}
+	}
+	
+	public void listDeceased(List<String[]> indi) {
+		
+		for (int i = 0; i < indi.size(); i++) {
+			if (indi.get(i)[5].compareTo("False") == 0) {
+				System.out.println("US29: " + indi.get(i)[0] + " is deceased.");
+			}
+		}
+	}
+	
 	public void run() throws IOException, ParseException
 	{
 		BufferedReader proj = null;
@@ -2180,6 +2219,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			
 			//Story 31
 			ListLivingSingle();
+			
+			// story 28
+			orderSiblingsByAge(indiDetails, famDetails);
+			
+			// story 29
+			listDeceased(indiDetails);
 
 	   }
 	      
