@@ -46,6 +46,8 @@
 	|	    @I41@	|	    BettyFinalForm /Wilson/	|	    F	|	    2020-06-22	|	    -1	|	    True	|		N/A	|	    {@F1@}	|		N/A	|
 	|	    @I42@	|	    3Day /Wilson/	|	    F	|	    1989-10-12	|	    29	|	    True	|		N/A	|	    {@F2@}	|		N/A	|
 	|	    @I43@	|	    7Month /Wilson/	|	    M	|	    1989-05-09	|	    29	|	    True	|		N/A	|	    {@F2@}	|		N/A	|
+	|	    @I44@	|	    Paul /Smith/	|	    M	|	    1908-05-01	|	    110	|	    True	|		N/A	|		N/A	|		N/A	|
+	|	    @I44@	|	    Adriana /Smith/	|	    F	|	    1905-05-05	|	    113	|	    True	|		N/A	|		N/A	|		N/A	|
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	Families
 	----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -157,6 +159,8 @@ Error: FAMILY: US16: F2: Male members of the family does not have the same last 
 ERROR IN US19 FIRST COUSINS: @I20@ and @I21@ SHOULD NOT MARRY
 ERROR IN US20 AUNT: @I22@ SHOULD NOT MARRY THEIR NIECE/NEWPHEW : @I23@
 ERROR: INDIVIDUAL: US21: @F6@: Father is a woman.
+Error: Individual: US022: Individual IDs I44 and I44 are identical. 
+
 Error: Individual: US023: Same name 'Laura /Jones/' and same birth date '1993-06-28' appears in GEDCOM.
 
 ERROR: INDIVIDUAL: US24: @F9@: Family has duplicate: @F10@
@@ -181,3 +185,24 @@ List of all living single people :Individual: US31: I33: Name Zach /Wilson/	Age:
 List of all living single people :Individual: US31: I34: Name Lucy /Wilson/	Age: 46		Alive: True	Married: NO
 List of all living single people :Individual: US31: I35: Name Mario /Wilson/	Age: 40		Alive: True	Married: NO
 List of all living single people :Individual: US31: I36: Name Luigi /Wilson/	Age: 40		Alive: True	Married: NO
+List of all living single people :Individual: US31: I44: Name Paul /Smith/	Age: 110		Alive: True	Married: NO
+List of all living single people :Individual: US31: I44: Name Adriana /Smith/	Age: 113		Alive: True	Married: NO
+US28: Siblings by age @F1@: [-1, -1, -1, -1, -1, -1]
+US28: Siblings by age @F2@: [29, 29, 29, 36]
+US28: Siblings by age @F3@: [38, 38, 38, 40, 40, 42, 46, 48, 52, 53, 54, 55, 56, 56, 57, 58, 90]
+US28: Siblings by age @F4@: [20, 24]
+US28: Siblings by age @F5@: [20]
+US28: Siblings by age @F6@: [14]
+US28: Siblings by age @F7@: [25, 25, 25]
+US28: Siblings by age @F8@: 
+US28: Siblings by age @F9@: 
+US28: Siblings by age @F10@: 
+US29: @I2@ is deceased.
+US29: @I4@ is deceased.
+US29: @I7@ is deceased.
+US29: @I8@ is deceased.
+US29: @I13@ is deceased.
+US29: @I14@ is deceased.
+US29: @I15@ is deceased.
+US35: THERE WAS NO ONE BORN IN THE LAST 30 DAYS
+US32: THE SIBILINGS WITH MORE THAN 5 BIRTHS ON THE SAME DAY ARE: [I1, I37, I38, I39, I40, I41]
