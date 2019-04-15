@@ -1,3 +1,5 @@
+package Project10;
+
 
 import java.io.*;
 import java.time.*;
@@ -1978,6 +1980,93 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 		}
 	}
 	
+	public List<String> recentBirths(List<String[]> indi)
+	{
+		List<String> recentBirths = new ArrayList<String>();
+		
+		for(int i = 0; i < indi.size(); i++)
+		{
+			String[] curDate = getComponents(indi.get(i)[3]);
+			
+			LocalDate birthday = LocalDate.of(Integer.parseInt(curDate[0]), Integer.parseInt(curDate[1]), Integer.parseInt(curDate[2]));
+			LocalDate now = LocalDate.now();
+			
+			Period p = Period.between(birthday, now);
+			
+
+			if(p.getDays() <= 30 && p.getYears() == 0)
+			{
+				recentBirths.add(indi.get(i)[0]);
+			}
+		}
+		
+		if(recentBirths.size() > 0)
+		{
+			System.out.println("US35: THE PEOPLE BORN IN THE LAST 30 DAYS ARE: " + recentBirths);
+		}
+		else
+		{
+			System.out.println("US35: THERE WAS NO ONE BORN IN THE LAST 30 DAYS");
+		}
+		return recentBirths;
+	}
+	
+	public Boolean checkMultipleBirths(List<String> sibs, List<String[]> indi)
+	{
+		if(sibs.size() < 5)
+		{
+			return false;
+		}
+		
+		List<String> birthdays = new ArrayList<String>();
+		
+		
+		for(int i = 0; i < sibs.size(); i++)
+		{
+			for(int j = 0; j < indi.size(); j++)
+			{
+				if(("@" + sibs.get(i) + "@").equals(indi.get(j)[0])) //We found the sib in indi
+				{
+					//Add their birthday
+					birthdays.add(indi.get(j)[3]);
+				}
+			}	
+		}
+		
+		//Now check if the birthdays in the List are all equal
+		
+		String compare = birthdays.get(0);
+		for(int i = 0; i < birthdays.size(); i++)
+		{
+			if(!birthdays.get(i).equals(compare))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	///Return null if there are no multiple births
+	public List<String> multipleBirths(List<String[]> fam, List<String[]> indi)
+	{
+		List<String> multipleBirths = new ArrayList<String>();
+		
+		for(int i = 0 ; i < fam.size(); i++)
+		{
+			ArrayList<String> sibs = getFamChildren(fam, i);
+			
+			if(checkMultipleBirths(sibs, indi))
+			{
+				System.out.println("US32: THE SIBILINGS WITH MORE THAN 5 BIRTHS ON THE SAME DAY ARE: " + sibs);
+				return sibs;
+			}
+		}
+		
+		System.out.println("US32: THERE ARE NO SIBLINGS WITH MORE THAN 5 BIRTHS ON THE SAME DAY");
+		return null;
+	}
+	
 	public void run() throws IOException, ParseException
 	{
 		BufferedReader proj = null;
@@ -2225,6 +2314,12 @@ public void datesBeforeCurrent(List<String[]> indi, List<String[]> fam) {
 			
 			// story 29
 			listDeceased(indiDetails);
+			
+			//Story35
+			recentBirths(indiDetails);
+			
+			//Story32
+			multipleBirths(famDetails, indiDetails);
 
 	   }
 	      
